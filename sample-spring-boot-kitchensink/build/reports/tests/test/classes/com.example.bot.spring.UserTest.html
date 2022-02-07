@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class com.example.bot.spring.UserTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class com.example.bot.spring.UserTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.example.bot.spring.html">com.example.bot.spring</a> &gt; UserTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">6</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.495s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testInputInterest</td>
+<td>0.063s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testOutputGeneral</td>
+<td>0.059s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testOutputInterest</td>
+<td>0.072s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testOutputMeal</td>
+<td>0.065s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testOutputWeight</td>
+<td>0.074s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testShowDailyProgress</td>
+<td>0.162s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2017-11-20 22:19:01.357  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.example.bot.spring.UserTest], using SpringBootContextLoader
+2017-11-20 22:19:01.358  INFO 77666 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [com.example.bot.spring.UserTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2017-11-20 22:19:01.363  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@39ae6991, org.springframework.test.context.support.DirtiesContextTestExecutionListener@327884ee, org.springframework.test.context.transaction.TransactionalTestExecutionListener@688e51e2]
+2017-11-20 22:19:01.392  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@129158ad, testMethod = testOutputMeal@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.454  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@129158ad, testMethod = testOutputMeal@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+2017-11-20 22:19:01.458  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@3a283ea1, testMethod = testShowDailyProgress@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.618  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@3a283ea1, testMethod = testShowDailyProgress@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+2017-11-20 22:19:01.621  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@500f05a3, testMethod = testInputInterest@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.683  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@500f05a3, testMethod = testInputInterest@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+2017-11-20 22:19:01.686  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@67fa8056, testMethod = testOutputGeneral@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.742  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@67fa8056, testMethod = testOutputGeneral@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+2017-11-20 22:19:01.750  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@5d3a7e90, testMethod = testOutputWeight@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.821  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@5d3a7e90, testMethod = testOutputWeight@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+2017-11-20 22:19:01.828  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Began transaction (1) for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@4cc1f93d, testMethod = testOutputInterest@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]]; transaction manager [org.springframework.orm.jpa.JpaTransactionManager@7804a99]; rollback [true]
+2017-11-20 22:19:01.895  INFO 77666 --- [    Test worker] o.s.t.c.transaction.TransactionContext   : Rolled back transaction for test context [DefaultTestContext@56ed0e85 testClass = UserTest, testInstance = com.example.bot.spring.UserTest@4cc1f93d, testMethod = testOutputInterest@UserTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@4c886421 testClass = UserTest, locations = '{}', classes = '{class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User, class com.example.bot.spring.RepoFactory4Test, class com.example.bot.spring.InputToFoodTest, class com.example.bot.spring.controllers.InputToFood, class com.example.bot.spring.controllers.MenuController, class com.example.bot.spring.DatabaseInitializer, class com.example.bot.spring.controllers.User}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.context.SpringBootTestContextCustomizer@5d20fabe, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@51c7f865, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@3dc72bb7], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]]].
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 3.5</a> at Nov 20, 2017 10:19:12 PM</p>
+</div>
+</div>
+</body>
+</html>

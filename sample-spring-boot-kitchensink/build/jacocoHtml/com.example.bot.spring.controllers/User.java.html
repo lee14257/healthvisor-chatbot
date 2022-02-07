@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring.controllers</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.example.bot.spring.controllers;
+import java.util.*;
+
+import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
+import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.MenuController;
+
+import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.util.function.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L24">public class User {</span>
+	
+	/** This controller has access to the models corresponding to the users' information
+	 * and use them to process the requests from the users.
+	 */
+	
+	@Autowired
+	private ProfileRepository profileRepository;
+	
+	@Autowired
+	private WeightRepository weightRepository;
+
+	@Autowired
+	private MealRepository mealRepository;
+	
+	@Autowired
+	private FoodRepository foodRepository;
+
+	@Autowired
+	private RecommendationRepository recommendationRepository;
+
+	@Autowired
+	private CampaignRepository campaignRepository;
+	
+	@Autowired
+	private MenuController mc;
+	
+	/** This method creates a new user in the database.
+	 * 
+	 * @param id the ID of the new user
+	 */
+	public void addUser(String id) {
+<span class="fc" id="L56">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (pf == null) {</span>
+<span class="fc" id="L58">			pf = new Profile();</span>
+<span class="fc" id="L59">			pf.setUserID(id);</span>
+<span class="fc" id="L60">			pf.setTime();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">			if (profileRepository.count() == 0) {</span>
+<span class="fc" id="L62">				pf.setAdmin(true);</span>
+			}
+			else {
+<span class="fc" id="L65">				pf.setAdmin(false);</span>
+			}
+<span class="fc" id="L67">			profileRepository.save(pf);</span>
+		}
+<span class="fc" id="L69">	}</span>
+	
+	/** This saves the gender of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param gender the gender of the user
+	 */
+	public void inputGender(String id, String gender) {
+<span class="fc" id="L77">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc" id="L78">		pf.setGender(gender);</span>
+<span class="fc" id="L79">		profileRepository.save(pf);</span>
+<span class="fc" id="L80">	}</span>
+	
+	/** This saves the age of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param age the age of the user
+	 */
+	public void inputAge(String id, int age) {
+<span class="fc" id="L88">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc" id="L89">		pf.setAge(age);</span>
+<span class="fc" id="L90">		profileRepository.save(pf);</span>
+<span class="fc" id="L91">	}</span>
+	
+	/** This saves the height of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param height the height of the user
+	 */
+	public void inputHeight(String id, Double height) {
+<span class="fc" id="L99">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc" id="L100">		pf.setHeight(height);</span>
+<span class="fc" id="L101">		profileRepository.save(pf);</span>
+<span class="fc" id="L102">	}</span>
+	
+	/** This saves the weight of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param weight the weight of the user
+	 */
+	public void inputWeight(String id, Double weight) {		
+<span class="fc" id="L110">		Weight wt = new Weight();</span>
+<span class="fc" id="L111">		wt.setUserID(id);</span>
+<span class="fc" id="L112">		wt.setTime();</span>
+<span class="fc" id="L113">		wt.setWeight(weight);</span>
+<span class="fc" id="L114">		weightRepository.save(wt);</span>
+<span class="fc" id="L115">	}</span>
+	
+	/** This is the getter for the user's weight.
+	 * 
+	 * @param id the ID of the user
+	 * @return the log of the user's weights
+	 */
+	public String outputWeight(String id) {		
+<span class="fc" id="L123">		boolean weightFound = false;</span>
+<span class="fc" id="L124">		String outputStr = &quot;&quot;;</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		for(Weight wt : weightRepository.findAll()) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">			if(wt.getUserID().equals(id)) { </span>
+<span class="fc" id="L127">	        		weightFound = true;</span>
+	        		
+<span class="fc" id="L129">	        		Date date = new Date();</span>
+<span class="fc" id="L130">	        		date.setTime(wt.getTime().getTime());</span>
+	        		
+<span class="fc" id="L132">	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(&quot;EEE MMM dd HH:mm:ss yyyy&quot;);</span>
+<span class="fc" id="L133">	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(&quot;Asia/Hong_Kong&quot;));</span>
+<span class="fc" id="L134">	        		String formattedDate = simpleDateFormat.format(date);</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">	        		if (!outputStr.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L136">	        			outputStr += &quot;\n&quot;;</span>
+	        		}
+<span class="fc" id="L138">	        		outputStr += formattedDate + &quot;:&quot; + &quot;\n&quot; + wt.getWeight() + &quot;kg&quot;;</span>
+	        }
+<span class="fc" id="L140">		}</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">		if (!weightFound) {</span>
+<span class="fc" id="L142">			outputStr += &quot;You did not log any weight&quot;;</span>
+		}
+		
+<span class="fc" id="L145">		return outputStr;</span>
+	}
+	
+	/** This method resets the interests that have been chosen by the user.
+	 * 
+	 * @param id the ID of the user
+	 * @return the response informing the user that his/her interests have been reset.
+	 */
+	public String resetInterest(String id) {	
+<span class="nc" id="L154">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="nc" id="L155">		pf.setInterest(null);</span>
+<span class="nc" id="L156">		profileRepository.save(pf);</span>
+<span class="nc" id="L157">		return &quot;Your interest records were deleted. Tell me your interests again.&quot;;</span>
+	}
+	
+	/** This saves the interests of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param interest the String containing the interests of the user
+	 * @return responses according to the user's actions
+	 */
+	public String inputInterest(String id, String interest) {	
+<span class="fc" id="L167">		int categoryFound = 0;</span>
+<span class="fc" id="L168">		String[] splitInterest = interest.split(&quot;/ &quot;);</span>
+
+		//Check for validity/existence of interest
+<span class="fc bfc" id="L171" title="All 2 branches covered.">		for(int i=0; i&lt;splitInterest.length; i++) {</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">			for(Food fd : foodRepository.findAll()) {</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">				if(fd.getCategory().equals(splitInterest[i])) {</span>
+<span class="fc" id="L174">					categoryFound++;</span>
+<span class="fc" id="L175">					break;</span>
+				}
+<span class="fc" id="L177">			}</span>
+			continue;
+		}
+		
+<span class="fc bfc" id="L181" title="All 2 branches covered.">		if(categoryFound != splitInterest.length) {</span>
+<span class="fc" id="L182">			return &quot;Those interests are not valid.&quot;;</span>
+		}
+		
+<span class="fc" id="L185">		Profile pf = profileRepository.findByUserID(id);	</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">		if(pf.getInterests() == null) {</span>
+<span class="fc" id="L187">			pf.setInterest(splitInterest);</span>
+		} else {
+<span class="fc" id="L189">			ArrayList&lt;String&gt; temp = new ArrayList&lt;String&gt;(Arrays.asList(pf.getInterests()));</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">			for(int i=0; i&lt;splitInterest.length; i++) {</span>
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">				if(!temp.contains(splitInterest[i])) {</span>
+<span class="nc" id="L192">					temp.add(splitInterest[i]);</span>
+				} else {
+<span class="fc" id="L194">					return &quot;I already recorded that&quot;;</span>
+				}
+			}
+<span class="nc" id="L197">			String[] tempInterest = new String[temp.size()];</span>
+<span class="nc" id="L198">			temp.toArray(tempInterest);</span>
+<span class="nc" id="L199">			pf.setInterest(tempInterest);</span>
+		}
+<span class="fc" id="L201">		profileRepository.save(pf);</span>
+<span class="fc" id="L202">		return &quot;&quot;;</span>
+	}
+	
+	/** This method gets the general profile of the user, including his/her gender, age, and height.
+	 * 
+	 * @param id the ID of the user
+	 * @return the user's general profile
+	 */
+	public String outputGeneral(String id) {
+<span class="fc" id="L211">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc" id="L212">		String outputStr = &quot;Gender: &quot;;</span>
+<span class="fc" id="L213">		Integer age = pf.getAge();</span>
+<span class="fc" id="L214">		String gender = pf.getGender();</span>
+<span class="fc" id="L215">		Double height = pf.getHeight();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">		if(pf.getGender()==&quot;Female&quot;) {</span>
+<span class="fc" id="L217">			outputStr += &quot;Female\n&quot;;</span>
+		}
+		else {
+<span class="fc" id="L220">			outputStr += &quot;Male\n&quot;;</span>
+		}
+<span class="fc" id="L222">		outputStr += &quot;Age: &quot;;</span>
+<span class="pc bpc" id="L223" title="1 of 4 branches missed.">		if(age == null || age == 0) {</span>
+<span class="fc" id="L224">			outputStr += &quot;44\n&quot;;</span>
+		}
+		else {
+<span class="fc" id="L227">			outputStr += age.toString()+&quot;\n&quot;;</span>
+		}
+<span class="fc" id="L229">		outputStr += &quot;Height: &quot;;</span>
+<span class="pc bpc" id="L230" title="1 of 4 branches missed.">		if(height == null || height == 0) {</span>
+<span class="fc" id="L231">			outputStr += &quot;177.0cm\n\n&quot;;</span>
+		}
+		else {
+<span class="fc" id="L234">			outputStr += height.toString()+&quot;cm\n\n&quot;;</span>
+		}
+<span class="fc" id="L236">		return outputStr;</span>
+	}
+	
+	/** This is the getter for the user's interests.
+	 * 
+	 * @param id the ID of the user
+	 * @return the user's interests in a String
+	 */
+	public String outputInterest(String id) {
+<span class="fc" id="L245">		String outputStr = &quot;&quot;;</span>
+<span class="fc" id="L246">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">		if(pf.getInterests() != null) {</span>
+<span class="fc" id="L248">			outputStr += &quot;Your interests in food are: \n&quot;;</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">			for(int i=0; i&lt;pf.getInterests().length; i++) {</span>
+<span class="fc" id="L250">				outputStr += &quot;-&quot; + pf.getInterests()[i] + &quot;\n&quot;;</span>
+			}
+<span class="fc" id="L252">			return outputStr;</span>
+		}
+<span class="fc" id="L254">		outputStr += &quot;You did not tell me your food interests yet.&quot;;		</span>
+<span class="fc" id="L255">		return outputStr;</span>
+	}
+
+	/** This saves the meal that the user consumed in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param food the String of the meal that the user consumed
+	 */
+	public void inputMeal(String id, String food) {		
+<span class="fc" id="L264">		Meal ml = new Meal();</span>
+<span class="fc" id="L265">		ml.setUserID(id);</span>
+<span class="fc" id="L266">		ml.setTime();</span>
+<span class="fc" id="L267">		ml.setFood(food);</span>
+<span class="fc" id="L268">		mealRepository.save(ml);	</span>
+<span class="fc" id="L269">	}</span>
+
+	/** This is the getter for the meals that the user has consumed.
+	 * 
+	 * @param id the ID of the user
+	 * @return the log of the meals that the user has consumed
+	 */
+	public String outputMeal(String id) {		
+<span class="fc" id="L277">		boolean mealFound = false;</span>
+<span class="fc" id="L278">		String outputStr = &quot;&quot;;</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">		for(Meal ml : mealRepository.findAll()) {</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">			if(ml.getUserID().equals(id)) { </span>
+<span class="fc" id="L281">	        		mealFound = true;</span>
+	        		
+<span class="fc" id="L283">	        		Date date = new Date();</span>
+<span class="fc" id="L284">	        		date.setTime(ml.getTime().getTime());</span>
+<span class="fc" id="L285">	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(&quot;EEE MMM dd HH:mm:ss zzz yyyy&quot;);</span>
+<span class="fc" id="L286">	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(&quot;Asia/Hong_Kong&quot;));</span>
+<span class="fc" id="L287">	        		String formattedDate = simpleDateFormat.format(date);</span>
+<span class="pc bpc" id="L288" title="1 of 2 branches missed.">	        		if (!outputStr.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L289">	        			outputStr += &quot;\n&quot;;</span>
+	        		}
+<span class="fc" id="L291">	        		outputStr += formattedDate + &quot;:&quot; + &quot;\n&quot; + ml.getFood();</span>
+	        }
+<span class="fc" id="L293">		}</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">		if (!mealFound) {</span>
+<span class="fc" id="L295">			outputStr += &quot;You did not log any meal&quot;;</span>
+		}
+		
+<span class="fc" id="L298">		return outputStr;</span>
+	}
+	
+	/** This creates a new recommendation and provides the user with a unique code.
+	 * 
+	 * @param id the ID of the user
+	 * @return the unique 6-digit code for the user
+	 */
+	public String makeRecommendation(String id) {	
+<span class="fc bfc" id="L307" title="All 2 branches covered.">		if (campaignRepository.count() == 0) {</span>
+<span class="fc" id="L308">			return null;</span>
+		}
+<span class="fc" id="L310">		Recommendation rd = new Recommendation();</span>
+<span class="fc" id="L311">		rd.setUserID(id);</span>
+<span class="fc" id="L312">		rd.setClaimed(false);</span>
+<span class="fc" id="L313">		recommendationRepository.save(rd);</span>
+<span class="fc" id="L314">		long code = rd.getID()%1000000;</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">		if (code&lt;100000) {</span>
+<span class="fc" id="L316">			code += 100000;</span>
+		}
+<span class="fc" id="L318">		rd.setUniqueCode(code);</span>
+<span class="fc" id="L319">		recommendationRepository.save(rd);</span>
+<span class="fc" id="L320">		return Long.toString(rd.getUniqueCode());</span>
+	}
+	
+
+	/** This allows the user the accept the recommendation.
+	 * 
+	 * @param uniqueCode the 6-digit unique code
+	 * @param userID the ID of the user
+	 * @return the corresponding responses base on the state of the user
+	 */
+	public String acceptRecommendation(String uniqueCode, String userID) {
+		
+		
+<span class="fc bfc" id="L333" title="All 6 branches covered.">		if (uniqueCode == null||uniqueCode.length() != 6 || !isInteger(uniqueCode)) {</span>
+<span class="fc" id="L334">			return &quot;Error: That is not a 6 digit number&quot;;</span>
+		}
+		
+<span class="fc" id="L337">		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">		if (rd!=null) {</span>
+<span class="fc bfc" id="L339" title="All 2 branches covered.">			if (!rd.getClaimed()) {</span>
+<span class="fc bfc" id="L340" title="All 2 branches covered.">				if (!rd.getUserID().equals(userID)) {</span>
+<span class="fc" id="L341">					rd.setClaimed(true);</span>
+<span class="fc" id="L342">					recommendationRepository.save(rd);</span>
+					
+<span class="fc" id="L344">					Profile pf = profileRepository.findByUserID(userID);</span>
+<span class="fc" id="L345">					pf.setClaimedNewUserCoupon(true);</span>
+<span class="fc" id="L346">					profileRepository.save(pf);</span>
+<span class="fc" id="L347">					return rd.getUserID();</span>
+				}
+				
+				else {
+<span class="fc" id="L351">					return &quot;Error: You made this recommendation&quot;;</span>
+				}
+			}
+			else {
+<span class="fc" id="L355">				return &quot;Error: has already been claimed&quot;;</span>
+			}
+		}
+		else {
+<span class="fc" id="L359">			return &quot;Error: There is no such code&quot;;</span>
+		}
+	}
+	
+	/** This method checks whether or not the String is an integer.
+	 * 
+	 * @param string a String
+	 * @return whether or not the String is an integer
+	 */
+	public boolean isInteger (String string) {
+<span class="fc" id="L369">		int size = string.length();</span>
+		
+<span class="fc bfc" id="L371" title="All 2 branches covered.">		for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L372" title="All 2 branches covered.">	        if (!Character.isDigit(string.charAt(i))) {</span>
+<span class="fc" id="L373">	            return false;</span>
+	        }
+	    }
+
+<span class="pc bpc" id="L377" title="1 of 2 branches missed.">	    return size &gt; 0;</span>
+	}
+		
+	/** This method allows the administrator to upload a coupon to start a campaign.
+	 * 
+	 * @param is the input stream of the image of the coupon
+	 */	
+	public void uploadCouponCampaign(InputStream is) {
+<span class="fc" id="L385">		Campaign campaign = null;</span>
+<span class="fc bfc" id="L386" title="All 2 branches covered.">		for(Campaign cp : campaignRepository.findAll()) {</span>
+<span class="fc" id="L387">			campaign = cp;</span>
+<span class="fc" id="L388">		}</span>
+		
+<span class="fc bfc" id="L390" title="All 2 branches covered.">		if (campaign == null) {</span>
+<span class="fc" id="L391">			campaign = new Campaign();</span>
+<span class="fc" id="L392">			campaign.setTime();</span>
+		}
+		
+		try {
+<span class="fc" id="L396">			campaign.setCouponImage(readImage(is));</span>
+<span class="nc" id="L397">		} catch (IOException e) {</span>
+			
+<span class="fc" id="L399">		}</span>
+<span class="fc" id="L400">		campaignRepository.save(campaign);	</span>
+<span class="fc" id="L401">	}</span>
+	
+	/** This method is a getter for the coupon image.
+	 * 
+	 * @return the byte format of the coupon image
+	 */
+	public byte[] getCoupon() {	
+		Campaign campaign;
+<span class="pc bpc" id="L409" title="1 of 2 branches missed.">		for(Campaign cp : campaignRepository.findAll()) {</span>
+<span class="fc" id="L410">			cp.incrementCount();</span>
+<span class="fc" id="L411">			campaignRepository.save(cp);</span>
+<span class="fc" id="L412">			return cp.getCouponImage();</span>
+		}
+<span class="nc" id="L414">		return null;</span>
+	}
+	
+	/** This method checks the validitiy for the user to claim the coupon.
+	 * 
+	 * @param id the ID of the user
+	 * @return the state of the user
+	 */
+	public String checkValidityOfUser (String id) {
+<span class="fc" id="L423">		Profile pf = profileRepository.findByUserID(id);</span>
+<span class="fc bfc" id="L424" title="All 2 branches covered.">		if (pf.getClaimedNewUserCoupon()) {</span>
+			
+<span class="fc" id="L426">			return &quot;claimed&quot;;</span>
+		}
+		
+<span class="fc" id="L429">		Campaign campaign=null;</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">		for(Campaign cp : campaignRepository.findAll()) {</span>
+<span class="fc" id="L431">			campaign = cp;</span>
+<span class="fc" id="L432">		}</span>
+		
+<span class="fc bfc" id="L434" title="All 2 branches covered.">		if (campaign != null) {</span>
+<span class="fc bfc" id="L435" title="All 2 branches covered.">			if (campaign.getCount()&gt;=5000) {</span>
+				//5000 coupons already taken
+<span class="fc" id="L437">				return &quot;taken&quot;;</span>
+			}
+<span class="fc bfc" id="L439" title="All 2 branches covered.">			if (campaign.getTime().getTime()&gt;pf.getRegisteredTime().getTime()) {</span>
+				//user registered before campaign began
+<span class="fc" id="L441">				return &quot;before&quot;;</span>
+			}
+			else {
+<span class="fc" id="L444">				return &quot;valid&quot;;</span>
+			}	
+		}
+		else {
+			//no campaign
+<span class="fc" id="L449">			return &quot;none&quot;;</span>
+		}
+		
+		
+	}
+	
+	/** This method checks whether or not the user is an administrator.
+	 * 
+	 * @param userID the ID of the user
+	 * @return whether or not the user is an administrator
+	 */
+	public boolean isAdmin(String userID) {
+<span class="fc" id="L461">		Profile pf = profileRepository.findByUserID(userID);</span>
+<span class="fc bfc" id="L462" title="All 2 branches covered.">		if (pf !=null) {</span>
+<span class="fc bfc" id="L463" title="All 2 branches covered.">			if (pf.getAdmin()) {</span>
+<span class="fc" id="L464">				return true;</span>
+			}
+		}
+<span class="fc" id="L467">		return false;</span>
+	}
+	
+	/** This method reads the image by converting it from an input stream to an array of bytes.
+	 * 
+	 * @param is the input stream of the image
+	 * @return the byte array of the image
+	 * @throws IOException
+	 */
+	public byte[] readImage(InputStream is) throws IOException
+	{
+<span class="fc" id="L478">	    byte[] buffer = new byte[8192];</span>
+	    int bytesRead;
+<span class="fc" id="L480">	    ByteArrayOutputStream output = new ByteArrayOutputStream();</span>
+<span class="fc bfc" id="L481" title="All 2 branches covered.">	    while ((bytesRead = is.read(buffer)) != -1)</span>
+	    {
+<span class="fc" id="L483">	        output.write(buffer, 0, bytesRead);</span>
+	    }
+<span class="fc" id="L485">	    return output.toByteArray();</span>
+
+	}
+	
+	/** This method gets the latest row fo the user's weight in the database.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the latest weight of the user
+	 */
+	private Double getLastWeight(String userID) {
+<span class="fc" id="L495">		Date closest = new Date(0);</span>
+<span class="fc" id="L496">		Weight lastWeight = null;</span>
+<span class="fc bfc" id="L497" title="All 2 branches covered.">		for(Weight wt : weightRepository.findAll()) {</span>
+<span class="fc bfc" id="L498" title="All 2 branches covered.">			if(wt.getUserID().equals(userID)) { </span>
+<span class="fc" id="L499">	        		Date weightTime = new Date(wt.getTime().getTime());</span>
+<span class="pc bpc" id="L500" title="1 of 2 branches missed.">	        		if(weightTime.after(closest)) {</span>
+<span class="fc" id="L501">	        			closest = weightTime;</span>
+<span class="fc" id="L502">	        			lastWeight = wt;</span>
+	        		}
+	        }
+<span class="fc" id="L505">		}</span>
+<span class="fc bfc" id="L506" title="All 2 branches covered.">		if(lastWeight == null) {</span>
+<span class="fc" id="L507">			return null;</span>
+		}
+		else{
+<span class="fc" id="L510">			return lastWeight.getWeight();</span>
+		}
+	}
+	
+	/** This method calculates the BMR of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMR of the user
+	 */
+	public double getBMR(String userID) {		
+<span class="fc" id="L520">		Profile pf = profileRepository.findByUserID(userID);</span>
+<span class="fc" id="L521">		Double weight = getLastWeight(userID);</span>
+<span class="fc" id="L522">		Double height = pf.getHeight();</span>
+<span class="fc" id="L523">		Integer age = pf.getAge();</span>
+<span class="fc bfc" id="L524" title="All 2 branches covered.">		if(weight == null) {</span>
+<span class="fc" id="L525">			weight = 89.0;</span>
+		}
+<span class="pc bpc" id="L527" title="1 of 4 branches missed.">		if(height == null || height == 0) {</span>
+<span class="fc" id="L528">			height = 177.0;</span>
+		}
+<span class="pc bpc" id="L530" title="1 of 4 branches missed.">		if(age == null || age == 0) {</span>
+<span class="fc" id="L531">			age = 44;</span>
+		}
+<span class="fc" id="L533">		double bmr = 10*weight + 6.25*height - 5*age;</span>
+<span class="fc bfc" id="L534" title="All 2 branches covered.">		if(pf.getGender()==&quot;Female&quot;) {</span>
+<span class="fc" id="L535">			bmr -= 161;</span>
+		}
+		else {
+<span class="fc" id="L538">			bmr += 5;</span>
+		}
+<span class="fc" id="L540">		return bmr;</span>
+	}
+
+	/** This method calculates the BMI of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMI of the user
+	 */
+	public double getBMI(String userID) {		
+<span class="fc" id="L549">		Profile pf = profileRepository.findByUserID(userID);</span>
+<span class="fc" id="L550">		Double weight = getLastWeight(userID);</span>
+<span class="fc" id="L551">		Double height = pf.getHeight()/100.0;</span>
+<span class="fc bfc" id="L552" title="All 2 branches covered.">		if(weight == null) {</span>
+<span class="fc" id="L553">			weight = 89.0;</span>
+		}
+<span class="pc bpc" id="L555" title="1 of 4 branches missed.">		if(height == null || height == 0) {</span>
+<span class="fc" id="L556">			height = 1.77;</span>
+		}
+<span class="fc" id="L558">		return weight/(height*height);</span>
+	}
+	
+	/** This method determines the BMI category of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMI category of the user
+	 */
+	public String getBMICategory(String userID) {		
+<span class="fc" id="L567">		double bmi = getBMI(userID);</span>
+<span class="pc bpc" id="L568" title="1 of 2 branches missed.">		if(bmi&lt;18.5) {</span>
+<span class="nc" id="L569">			return &quot;Underweight&quot;;</span>
+		}
+<span class="pc bpc" id="L571" title="1 of 2 branches missed.">		else if(bmi&lt;25) {</span>
+<span class="nc" id="L572">			return &quot;Normal&quot;;</span>
+		}
+<span class="fc bfc" id="L574" title="All 2 branches covered.">		else if(bmi&lt;30) {</span>
+<span class="fc" id="L575">			return &quot;Overweight&quot;;</span>
+		}
+		else {
+<span class="fc" id="L578">			return &quot;Obese&quot;;</span>
+		}
+	}
+	
+	/** This method calculates the BFP of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BFP of the user
+	 */
+	public double getBFP (String userID) {		
+<span class="fc" id="L588">		Profile pf = profileRepository.findByUserID(userID);</span>
+<span class="fc" id="L589">		Integer age = pf.getAge();</span>
+<span class="pc bpc" id="L590" title="1 of 4 branches missed.">		if(age == null || age == 0) {</span>
+<span class="fc" id="L591">			age = 44;</span>
+		}
+<span class="fc" id="L593">		double bfp = 1.2*getBMI(userID) + 0.23*age;</span>
+<span class="fc bfc" id="L594" title="All 2 branches covered.">		if(pf.getGender()==&quot;Female&quot;) {</span>
+<span class="fc" id="L595">			bfp -= 16.2;</span>
+		}
+		else {
+<span class="fc" id="L598">			bfp -= 5.4;</span>
+		}
+<span class="fc" id="L600">		return bfp;</span>
+	}
+	
+	/** This method gets the set of food consumed by the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the set of food consumed by the user today
+	 */
+	private Set&lt;Food&gt; getFoodsFromToday(String userID){
+<span class="fc" id="L609">		Set&lt;Food&gt; foods = new HashSet&lt;Food&gt;();</span>
+<span class="fc bfc" id="L610" title="All 2 branches covered.">		for(Meal ml : mealRepository.findAll()) {</span>
+<span class="fc bfc" id="L611" title="All 2 branches covered.">			if(ml.getUserID().equals(userID)) { </span>
+<span class="fc" id="L612">	        		Calendar today = Calendar.getInstance();</span>
+<span class="fc" id="L613">	        		Calendar mealTime = Calendar.getInstance();</span>
+<span class="fc" id="L614">	        		Date mealDate = new Date(ml.getTime().getTime());</span>
+<span class="fc" id="L615">	        		mealTime.setTime(mealDate);</span>
+<span class="pc bpc" id="L616" title="1 of 2 branches missed.">	        		if((today.get(Calendar.ERA) == mealTime.get(Calendar.ERA) &amp;&amp;</span>
+<span class="pc bpc" id="L617" title="1 of 2 branches missed.">	        			today.get(Calendar.YEAR) == mealTime.get(Calendar.YEAR) &amp;&amp;</span>
+<span class="pc bpc" id="L618" title="1 of 2 branches missed.">	        			today.get(Calendar.DAY_OF_YEAR) == mealTime.get(Calendar.DAY_OF_YEAR))) {</span>
+<span class="fc" id="L619">	        			foods.addAll(mc.generateFoods(ml.getFood()));</span>
+	        		}
+	        }
+<span class="fc" id="L622">		}</span>
+<span class="fc" id="L623">		return foods;</span>
+	}
+	
+	/** This calculates the remainig calories for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig calories for the user today.
+	 */
+	public double getRemainingCalories(String userID) {		
+<span class="fc" id="L632">		double currentCalories = 0;</span>
+<span class="fc" id="L633">		Set&lt;Food&gt; mealsToday = getFoodsFromToday(userID);</span>
+<span class="pc bpc" id="L634" title="1 of 2 branches missed.">		for(Food fd : mealsToday) {</span>
+<span class="nc" id="L635">			currentCalories += fd.getCalories();</span>
+<span class="nc" id="L636">		}</span>
+<span class="fc" id="L637">		return getBMR(userID) - currentCalories;</span>
+	}
+	
+	/** This calculates the remainig protein for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig protein for the user today.
+	 */
+	public double getRemainingProtein(String userID) {		
+<span class="fc" id="L646">		double currentProtein = 0;</span>
+<span class="fc" id="L647">		Set&lt;Food&gt; mealsToday = getFoodsFromToday(userID);</span>
+<span class="pc bpc" id="L648" title="1 of 2 branches missed.">		for(Food fd : mealsToday) {</span>
+<span class="nc" id="L649">			currentProtein += fd.getProtein();</span>
+<span class="nc" id="L650">		}</span>
+<span class="fc" id="L651">		return getBMR(userID)*0.2/4.0 - currentProtein;</span>
+	}
+	
+	/** This calculates the remainig carbohydrate for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig carbohydrate for the user today.
+	 */
+	public double getRemainingCarbohydrate(String userID) {		
+<span class="fc" id="L660">		double currentCarbohydrate = 0;</span>
+<span class="fc" id="L661">		Set&lt;Food&gt; mealsToday = getFoodsFromToday(userID);</span>
+<span class="pc bpc" id="L662" title="1 of 2 branches missed.">		for(Food fd : mealsToday) {</span>
+<span class="nc" id="L663">			currentCarbohydrate += fd.getCarbohydrate();</span>
+<span class="nc" id="L664">		}</span>
+<span class="fc" id="L665">		return getBMR(userID)*0.55/4.0 - currentCarbohydrate;</span>
+	}
+	
+	/** This calculates the remainig fat for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig fat for the user today.
+	 */
+	public double getRemainingFat(String userID) {		
+<span class="fc" id="L674">		double currentFat = 0;</span>
+<span class="fc" id="L675">		Set&lt;Food&gt; mealsToday = getFoodsFromToday(userID);</span>
+<span class="pc bpc" id="L676" title="1 of 2 branches missed.">		for(Food fd : mealsToday) {</span>
+<span class="nc" id="L677">			currentFat += fd.getSaturatedFat();</span>
+<span class="nc" id="L678">		}</span>
+<span class="fc" id="L679">		return getBMR(userID)*0.25/9.0 - currentFat;</span>
+	}
+
+	/** This shows the daily progress on nutrients and other information of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return daily report
+	 */
+	public String showDailyProgress(String userID) {
+<span class="fc" id="L688">		DecimalFormat format = new DecimalFormat(&quot;##.00&quot;);</span>
+<span class="fc" id="L689">		return &quot;Basal Metabolic Rate (BMR): &quot;+format.format(getBMR(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L690">				&quot;Body Mass Index (BMI): &quot;+format.format(getBMI(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L691">				&quot;Body Fat Percentage (BFP): &quot;+format.format(getBFP(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L692">				&quot;Current Status: &quot;+getBMICategory(userID)+&quot;\n&quot;+&quot;\n&quot;+</span>
+				&quot;Remaining Nutrients for today: \n&quot;+
+<span class="fc" id="L694">				&quot;Calories: &quot;+format.format(getRemainingCalories(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L695">				&quot;Protein: &quot;+format.format(getRemainingProtein(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L696">				&quot;Carbohydrate: &quot;+format.format(getRemainingCarbohydrate(userID))+&quot;\n&quot;+</span>
+<span class="fc" id="L697">				&quot;Fat: &quot;+format.format(getRemainingFat(userID))+&quot;\n&quot;;			</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

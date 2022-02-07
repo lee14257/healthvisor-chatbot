@@ -1,0 +1,1085 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KitchenSinkController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">KitchenSinkController.java</span></div><h1>KitchenSinkController.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2016 LINE Corporation
+ *
+ * LINE Corporation licenses this file to you under the Apache License,
+ * version 2.0 (the &quot;License&quot;); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at:
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+package com.example.bot.spring;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.*;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+import java.util.regex.*;
+import com.linecorp.bot.model.profile.UserProfileResponse;
+
+import com.example.bot.spring.controllers.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.google.common.io.ByteStreams;
+
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.JoinEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.UnfollowEvent;
+import com.linecorp.bot.model.event.message.AudioMessageContent;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
+import com.linecorp.bot.model.event.message.StickerMessageContent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.source.GroupSource;
+import com.linecorp.bot.model.event.source.RoomSource;
+import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.message.AudioMessage;
+import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.ImagemapMessage;
+import com.linecorp.bot.model.message.LocationMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.StickerMessage;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.imagemap.ImagemapArea;
+import com.linecorp.bot.model.message.imagemap.ImagemapBaseSize;
+import com.linecorp.bot.model.message.imagemap.MessageImagemapAction;
+import com.linecorp.bot.model.message.imagemap.URIImagemapAction;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
+import com.linecorp.bot.model.message.template.ConfirmTemplate;
+import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.model.PushMessage;
+
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+
+import lombok.NonNull;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
+import java.net.URI;
+
+import com.example.bot.spring.tables.Food;
+import com.example.bot.spring.tables.FoodRepository;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import com.example.bot.spring.ListSingleton;
+
+
+
+<span class="nc" id="L103">@Slf4j</span>
+@LineMessageHandler
+public class KitchenSinkController {
+	
+	/** This is the class that handles the view of the chat bot. This handles the messages the user will
+	 * receive, as well as passing the user's messages to the corresponding controllers.
+	 */
+	
+	@Autowired
+	private FoodRepository foodRepository;
+	
+	@Autowired
+	private LineMessagingClient lineMessagingClient;
+	
+	@Autowired
+	private InputToFood inputToFood;
+	
+	@Autowired
+	private User user;
+	
+	/** This is the enumeration of the categories of functions provided by the chat bot.
+	 *
+	 */
+<span class="nc" id="L126">	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}</span>
+	
+	/** This is the enumeration of the functions provided in the profile category.
+	 *
+	 */
+<span class="nc" id="L131">	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}</span>
+	
+	/** This is the enumeration of the functions provided in the menu category.
+	 *
+	 */
+<span class="nc" id="L136">	public enum Menu {TEXT, URL, JPEG}</span>
+	
+	/** This is the variable that tracks the function that the user is currently on.
+	 *
+	 */
+<span class="nc" id="L141">	public Categories categories = null;</span>
+	
+	/** This is the variable that tracks the function in profile that the user is currently on.
+	 *
+	 */
+<span class="nc" id="L146">	public Profile profile = null;</span>
+	
+	/** This is the variable that tracks the function in menu that the user is currently on.
+	 *
+	 */
+<span class="nc" id="L151">	public Menu menu = null;</span>
+	
+	/** This is the list of the users currently using the chat bot.
+	 * 
+	 */
+<span class="nc" id="L156">	public List&lt;String&gt; userList = new ArrayList&lt;String&gt;();</span>
+	
+	/** This is the list of the category variable that each user is on.
+	 * 
+	 */
+<span class="nc" id="L161">	public List&lt;Categories&gt; catList = new ArrayList&lt;Categories&gt;();</span>
+	
+	/** This is the list of the profile variable that each user is on.
+	 * 
+	 */
+<span class="nc" id="L166">	public List&lt;Profile&gt; profList = new ArrayList&lt;Profile&gt;();</span>
+	
+	/** This is the list of the menu variable that each user is on.
+	 * 
+	 */
+<span class="nc" id="L171">	public List&lt;Menu&gt; menuList = new ArrayList&lt;Menu&gt;();</span>
+	
+	/** This is the default message of the chat bot.
+	 * 
+	 */
+<span class="nc" id="L176">	public String showMainMenu = &quot;Hello I am your diet coach! What can I help you with?&quot;;</span>
+	
+	/** This is the message of the default text.
+	 * 
+	 */
+<span class="nc" id="L181">	public Message mainMenuMessage = new TextMessage(showMainMenu);</span>
+
+	/** This is the text for the profile option.
+	 * 
+	 */
+    String imageProfile;
+    
+    /** This is the text for the daily progress option.
+	 * 
+	 */
+    String imageDaily;
+    
+    /** This is the text for the food details option.
+	 * 
+	 */
+    String imageFood;
+    
+    /** This is the text for the menu option.
+	 * 
+	 */
+    String imageMenu; 
+    
+    /** This is the text for the friend option.
+	 * 
+	 */
+    String imageFriend;
+
+	@EventMapping
+	public void handleTextMessageEvent(MessageEvent&lt;TextMessageContent&gt; event) throws Exception {
+<span class="nc" id="L210">		log.info(&quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;);</span>
+<span class="nc" id="L211">		log.info(&quot;This is your entry point:&quot;);</span>
+<span class="nc" id="L212">		log.info(&quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;);</span>
+<span class="nc" id="L213">		TextMessageContent message = event.getMessage();</span>
+<span class="nc" id="L214">		handleTextContent(event.getReplyToken(), event, message);</span>
+<span class="nc" id="L215">	}</span>
+
+	@EventMapping
+	public void handleStickerMessageEvent(MessageEvent&lt;StickerMessageContent&gt; event) {
+<span class="nc" id="L219">		handleSticker(event.getReplyToken(), event.getMessage());</span>
+<span class="nc" id="L220">	}</span>
+
+	@EventMapping
+	public void handleLocationMessageEvent(MessageEvent&lt;LocationMessageContent&gt; event) {
+<span class="nc" id="L224">		LocationMessageContent locationMessage = event.getMessage();</span>
+<span class="nc" id="L225">		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),</span>
+<span class="nc" id="L226">				locationMessage.getLatitude(), locationMessage.getLongitude()));</span>
+<span class="nc" id="L227">	}</span>
+
+<span class="nc" id="L229">	int index = -1;</span>
+	
+	
+	/** This method handles the image message events, which is choosing the corresponding functions
+	 * provided by the chat bot.
+	 * 
+	 * @param event action of the user chooses by tapping a button
+	 * @throws IOException
+	 */
+	@EventMapping
+	public void handleImageMessageEvent(MessageEvent&lt;ImageMessageContent&gt; event) throws IOException {
+		final MessageContentResponse response;
+<span class="nc" id="L241">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L242">		String messageId = event.getMessage().getId();</span>
+		try {
+<span class="nc" id="L244">			response = lineMessagingClient.getMessageContent(messageId).get();</span>
+<span class="nc" id="L245">		} catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L246">			reply(replyToken, new TextMessage(&quot;Cannot get image: &quot; + e.getMessage()));</span>
+<span class="nc" id="L247">			throw new RuntimeException(e);</span>
+<span class="nc" id="L248">		}</span>
+		
+//		int index = -1;
+//		for(int i=0;i&lt;userList.size();i++) {
+//			if(userList.get(i).equals(event.getSource().getUserId())) {
+//				index = i;
+//				break;
+//			}
+//		}
+//		if(index == -1) {
+//			categories = null;
+//			profile = null;
+//			menu = null;
+//			index = userList.size();
+//			userList.add(event.getSource().getUserId());
+//			catList.add(categories);
+//			profList.add(profile);
+//			menuList.add(menu);
+//		}
+//		else {
+//			categories = catList.get(index);
+//			profile = profList.get(index);
+//			menu = menuList.get(index);
+//		}
+<span class="nc" id="L272">		ListSingleton singleton = ListSingleton.getInstance();</span>
+<span class="nc" id="L273">		index = singleton.initiate(event.getSource().getUserId());</span>
+<span class="nc" id="L274">		categories = singleton.getCategories();</span>
+<span class="nc" id="L275">		profile = singleton.getProfile();</span>
+<span class="nc" id="L276">		menu = singleton.getMenu();</span>
+		
+<span class="nc bnc" id="L278" title="All 2 branches missed.">		if (categories == Categories.CAMPAIGN) {</span>
+<span class="nc" id="L279">			InputStream initialStream = response.getStream();</span>
+<span class="nc" id="L280">			user.uploadCouponCampaign(initialStream);</span>
+<span class="nc" id="L281">			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L282">			List&lt;Message&gt; messages = new ArrayList&lt;Message&gt;();</span>
+<span class="nc" id="L283">			TextMessage reply = new TextMessage(&quot;Uploaded successful&quot;);</span>
+<span class="nc" id="L284">			messages.add(reply);</span>
+<span class="nc" id="L285">			messages.add(getMenuTemplate());</span>
+<span class="nc" id="L286">			this.reply(replyToken, messages);</span>
+<span class="nc" id="L287">		}</span>
+		
+<span class="nc bnc" id="L289" title="All 4 branches missed.">		else if (categories == Categories.MENU &amp;&amp; menu == Menu.JPEG) {</span>
+<span class="nc" id="L290">			DownloadedContent jpg = saveContent(&quot;jpg&quot;, response);</span>
+<span class="nc" id="L291">			String menuStr = inputToFood.readFromJPEG(jpg); // Use this menu string for features</span>
+<span class="nc" id="L292">			menuStr = inputToFood.readFromText(&quot;&quot;+event.getSource().getUserId(), menuStr);</span>
+<span class="nc" id="L293">			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L294">			menu = null;</span>
+<span class="nc" id="L295">			reply(((MessageEvent) event).getReplyToken(), new TextMessage(menuStr));</span>
+<span class="nc" id="L296">		}</span>
+		else {
+<span class="nc" id="L298">			String message = &quot;What is this image for?&quot;;</span>
+<span class="nc" id="L299">			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));</span>
+		}
+				
+<span class="nc" id="L302">		singleton.setValues(index, categories, profile, menu);</span>
+
+<span class="nc" id="L304">	}</span>
+
+	@EventMapping
+	public void handleAudioMessageEvent(MessageEvent&lt;AudioMessageContent&gt; event) throws IOException {
+		final MessageContentResponse response;
+<span class="nc" id="L309">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L310">		String messageId = event.getMessage().getId();</span>
+		try {
+<span class="nc" id="L312">			response = lineMessagingClient.getMessageContent(messageId).get();</span>
+<span class="nc" id="L313">		} catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L314">			reply(replyToken, new TextMessage(&quot;Cannot get image: &quot; + e.getMessage()));</span>
+<span class="nc" id="L315">			throw new RuntimeException(e);</span>
+<span class="nc" id="L316">		}</span>
+<span class="nc" id="L317">		DownloadedContent mp4 = saveContent(&quot;mp4&quot;, response);</span>
+<span class="nc" id="L318">		reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));</span>
+<span class="nc" id="L319">	}</span>
+
+	@EventMapping
+	public void handleUnfollowEvent(UnfollowEvent event) {
+<span class="nc" id="L323">		log.info(&quot;unfollowed this bot: {}&quot;, event);</span>
+<span class="nc" id="L324">	}</span>
+
+	@EventMapping
+	public void handleFollowEvent(FollowEvent event) {
+<span class="nc" id="L328">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L329">		this.replyText(replyToken, &quot;Got followed event&quot;);</span>
+<span class="nc" id="L330">	}</span>
+
+	@EventMapping
+	public void handleJoinEvent(JoinEvent event) {
+<span class="nc" id="L334">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L335">		this.replyText(replyToken, &quot;Joined &quot; + event.getSource());</span>
+<span class="nc" id="L336">	}</span>
+
+	@EventMapping
+	public void handlePostbackEvent(PostbackEvent event) {
+<span class="nc" id="L340">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L341">		this.replyText(replyToken, &quot;Got postback &quot; + event.getPostbackContent().getData());</span>
+<span class="nc" id="L342">	}</span>
+
+	@EventMapping
+	public void handleBeaconEvent(BeaconEvent event) {
+<span class="nc" id="L346">		String replyToken = event.getReplyToken();</span>
+<span class="nc" id="L347">		this.replyText(replyToken, &quot;Got beacon message &quot; + event.getBeacon().getHwid());</span>
+<span class="nc" id="L348">	}</span>
+
+	@EventMapping
+	public void handleOtherEvent(Event event) {
+<span class="nc" id="L352">		log.info(&quot;Received message(Ignored): {}&quot;, event);</span>
+<span class="nc" id="L353">	}</span>
+
+<span class="nc bnc" id="L355" title="All 4 branches missed.">	private void reply(@NonNull String replyToken, @NonNull Message message) {</span>
+<span class="nc" id="L356">		reply(replyToken, Collections.singletonList(message));</span>
+<span class="nc" id="L357">	}</span>
+
+<span class="nc bnc" id="L359" title="All 4 branches missed.">	private void reply(@NonNull String replyToken, @NonNull List&lt;Message&gt; messages) {</span>
+		try {
+<span class="nc" id="L361">			BotApiResponse apiResponse = lineMessagingClient.replyMessage(new ReplyMessage(replyToken, messages)).get();</span>
+<span class="nc" id="L362">			log.info(&quot;Sent messages: {}&quot;, apiResponse);</span>
+<span class="nc" id="L363">		} catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L364">			throw new RuntimeException(e);</span>
+<span class="nc" id="L365">		}</span>
+<span class="nc" id="L366">	}</span>
+	
+<span class="nc bnc" id="L368" title="All 4 branches missed.">	private void sendPushMessage(@NonNull Message message,@NonNull String id) {</span>
+		try {
+<span class="nc" id="L370">			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, message)).get();</span>
+<span class="nc" id="L371">			log.info(&quot;Sent messages: {}&quot;, apiResponse);</span>
+<span class="nc" id="L372">		} catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L373">			throw new RuntimeException(e);</span>
+<span class="nc" id="L374">		}</span>
+<span class="nc" id="L375">	}</span>
+
+<span class="nc bnc" id="L377" title="All 4 branches missed.">	private void replyText(@NonNull String replyToken, @NonNull String message) {</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">		if (replyToken.isEmpty()) {</span>
+<span class="nc" id="L379">			throw new IllegalArgumentException(&quot;replyToken must not be empty&quot;);</span>
+		}
+<span class="nc bnc" id="L381" title="All 2 branches missed.">		if (message.length() &gt; 1000) {</span>
+<span class="nc" id="L382">			message = message.substring(0, 1000 - 2) + &quot;..&quot;;</span>
+		}
+<span class="nc" id="L384">		this.reply(replyToken, new TextMessage(message));</span>
+<span class="nc" id="L385">	}</span>
+
+
+	private void handleSticker(String replyToken, StickerMessageContent content) {
+<span class="nc" id="L389">		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));</span>
+<span class="nc" id="L390">	}</span>
+	
+	/** This creates the main menu template in the chat bot.
+	 * 
+	 * @return the template message containing the menu template
+	 */
+	private TemplateMessage getMenuTemplate() {
+<span class="nc" id="L397">	    imageProfile = createUri(&quot;/static/buttons/menuProfile.jpg&quot;);</span>
+<span class="nc" id="L398">	    imageDaily = createUri(&quot;/static/buttons/menuDaily.jpg&quot;);</span>
+<span class="nc" id="L399">	    imageFood = createUri(&quot;/static/buttons/menuFood.jpg&quot;);</span>
+<span class="nc" id="L400">	    imageMenu = createUri(&quot;/static/buttons/menuMenu.jpg&quot;); </span>
+<span class="nc" id="L401">	    imageFriend = createUri(&quot;/static/buttons/menuFriend.jpg&quot;);</span>
+<span class="nc" id="L402">	    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(</span>
+<span class="nc" id="L403">	            Arrays.asList(</span>
+<span class="nc" id="L404">	                    new CarouselColumn(imageProfile, &quot;Your Profile&quot;, &quot;Edit and view your profile&quot;, Arrays.asList(</span>
+	                            new MessageAction(&quot;Click here&quot;, &quot;profile&quot;)
+	                    )),
+<span class="nc" id="L407">	                    new CarouselColumn(imageDaily, &quot;Daily Progress&quot;, &quot;View your nutritional progress today&quot;, Arrays.asList(</span>
+	                            new MessageAction(&quot;Click here&quot;, &quot;daily&quot;)
+	                    )),
+<span class="nc" id="L410">	                    new CarouselColumn(imageFood, &quot;Food Details&quot;, &quot;Get nutritional details of a food&quot;, Arrays.asList(</span>
+	                            new MessageAction(&quot;Click here&quot;, &quot;food&quot;)
+	                    )),
+<span class="nc" id="L413">	                    new CarouselColumn(imageMenu, &quot;Choose Menu&quot;, &quot;Let me choose a menu for you&quot;, Arrays.asList(</span>
+	                            new MessageAction(&quot;Click here&quot;, &quot;menu&quot;)
+	                    )),
+<span class="nc" id="L416">	                    new CarouselColumn(imageFriend, &quot;Refer a Friend&quot;, &quot;Make recommendations to a friend to get an ice cream coupon!&quot;, Arrays.asList(</span>
+	                            new MessageAction(&quot;Click here&quot;, &quot;friend&quot;)
+	                    ))
+	            ));
+<span class="nc" id="L420">	   TemplateMessage menuTemplateMessage = new TemplateMessage(&quot;Front Menu&quot;, menuCarouselTemplate);</span>
+<span class="nc" id="L421">	   return menuTemplateMessage;</span>
+	}
+	
+	/** This method handles the responses of the user, and refer them to corresponding controllers.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param event the message event
+	 * @param content the content of the message from the user
+	 * @throws Exception
+	 */
+	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
+            throws Exception {
+		
+<span class="nc" id="L434">		String text = content.getText();</span>
+
+		Message response;
+<span class="nc" id="L437">		List&lt;Message&gt; messages = new ArrayList&lt;Message&gt;();</span>
+<span class="nc" id="L438">		log.info(&quot;Got text message from {}: {}&quot;, replyToken, text);</span>
+		
+<span class="nc" id="L440">		ListSingleton singleton = ListSingleton.getInstance();</span>
+<span class="nc" id="L441">		index = singleton.initiate(event.getSource().getUserId());</span>
+<span class="nc" id="L442">		categories = singleton.getCategories();</span>
+<span class="nc" id="L443">		profile = singleton.getProfile();</span>
+<span class="nc" id="L444">		menu = singleton.getMenu();</span>
+		
+//		int index = -1;
+//		for(int i=0;i&lt;userList.size();i++) {
+//			if(userList.get(i).equals(event.getSource().getUserId())) {
+//				index = i;
+//				break;
+//			}
+//		}
+//		if(index == -1) {
+//			categories = null;
+//			profile = null;
+//			menu = null;
+//			index = userList.size();
+//			userList.add(event.getSource().getUserId());
+//			catList.add(categories);
+//			profList.add(profile);
+//			menuList.add(menu);
+//		}
+//		else {
+//			categories = catList.get(index);
+//			profile = profList.get(index);
+//			menu = menuList.get(index);
+//		}
+		
+<span class="nc bnc" id="L469" title="All 2 branches missed.">		if (categories == null) {		</span>
+<span class="nc" id="L470">			user.addUser(event.getSource().getUserId());</span>
+<span class="nc" id="L471">			messages.add(mainMenuMessage);</span>
+<span class="nc" id="L472">			messages.add(getMenuTemplate());</span>
+<span class="nc" id="L473">			this.reply(replyToken, messages); </span>
+<span class="nc" id="L474">			categories = Categories.MAIN_MENU;</span>
+		}
+		else {
+<span class="nc bnc" id="L477" title="All 8 branches missed.">			switch (categories) {</span>
+		    		case MAIN_MENU:
+<span class="nc" id="L479">		    			response = new TextMessage(handleMainMenu(text, event));</span>
+<span class="nc" id="L480">		    			messages.add(response);</span>
+<span class="nc bnc" id="L481" title="All 2 branches missed.">		    			if (categories == Categories.MAIN_MENU) {</span>
+<span class="nc" id="L482">		    				messages.add(getMenuTemplate());</span>
+		    			}
+<span class="nc" id="L484">		    			this.reply(replyToken, messages);</span>
+<span class="nc" id="L485">		    			break;</span>
+		    		case PROFILE:
+<span class="nc" id="L487">		    			String responseText = handleProfile(replyToken, text, event);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">		    			if(!responseText.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L489">			    			response = new TextMessage(responseText);</span>
+<span class="nc" id="L490">			    			messages.add(response);</span>
+		    			}
+<span class="nc bnc" id="L492" title="All 2 branches missed.">		    			if (categories == Categories.MAIN_MENU) {</span>
+<span class="nc" id="L493">		    				messages.add(getMenuTemplate());</span>
+		    			}
+<span class="nc bnc" id="L495" title="All 2 branches missed.">		    			if(messages.size()!=0) {</span>
+<span class="nc" id="L496">			    			this.reply(replyToken, messages);</span>
+		    			}
+		    			break;
+		    		case FOOD:
+<span class="nc" id="L500">		    			response = new TextMessage(handleFood(text));</span>
+<span class="nc" id="L501">		    			messages.add(response);</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">		    			if (categories == Categories.MAIN_MENU) {</span>
+<span class="nc" id="L503">		    				messages.add(getMenuTemplate());</span>
+		    			}
+<span class="nc" id="L505">		    			this.reply(replyToken, messages);	    			</span>
+<span class="nc" id="L506">		    			break;</span>
+		    		case MENU:
+<span class="nc" id="L508">		    			response = new TextMessage(handleMenu(text, event));</span>
+<span class="nc" id="L509">		    			messages.add(response);</span>
+<span class="nc bnc" id="L510" title="All 2 branches missed.">		    			if (categories == Categories.MAIN_MENU) {</span>
+<span class="nc" id="L511">		    				messages.add(getMenuTemplate());</span>
+		    			}
+<span class="nc" id="L513">		    			this.reply(replyToken, messages);</span>
+<span class="nc" id="L514">		    			break;</span>
+		    		case CODE:
+<span class="nc" id="L516">		    			String res = handleCode(text, event);</span>
+<span class="nc" id="L517">		    			break; </span>
+		    		case CAMPAIGN:
+<span class="nc" id="L519">		    			this.replyText(replyToken, &quot;Please upload the coupon image.&quot;);</span>
+<span class="nc" id="L520">		    			break;</span>
+		    		case INIT:
+<span class="nc" id="L522">		    			this.handleInit();</span>
+<span class="nc" id="L523">		    			this.replyText(replyToken, &quot;Database initialized.&quot;);</span>
+		    			break;
+			}
+		}
+<span class="nc" id="L527">		singleton.setValues(index, categories, profile, menu);</span>
+<span class="nc" id="L528">    }</span>
+	
+	/** This method handles the main menu function.
+	 * 
+	 * @param text the text message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
+	private String handleMainMenu (String text, Event event) {
+<span class="nc" id="L537">		String result = &quot;&quot;;</span>
+<span class="nc" id="L538">		Matcher m = Pattern.compile(&quot;profile|daily|food|menu|initdb|friend|code|admin&quot;, Pattern.CASE_INSENSITIVE).matcher(text);</span>
+		
+<span class="nc bnc" id="L540" title="All 2 branches missed.">		if (m.find()) {</span>
+<span class="nc bnc" id="L541" title="All 34 branches missed.">			switch (m.group().toLowerCase()) {</span>
+		    		case &quot;profile&quot;: {
+<span class="nc" id="L543">		    			categories = Categories.PROFILE;</span>
+<span class="nc" id="L544">		    			result = &quot;What would you like to do?\n\n&quot;</span>
+		    				 + &quot;Gender - Set your gender\n&quot;
+		    				 + &quot;Age - Update your age\n&quot;
+		    				 + &quot;Height - Update your height\n&quot;
+		                  + &quot;Weight - Record your weight\n&quot;
+		                  + &quot;Meal - Record your meal\n&quot;
+		                  + &quot;Interest - Record your interests\n&quot;
+		                  + &quot;View - View your profile&quot;;
+<span class="nc" id="L552">		    			break;</span>
+		    		}
+		    		case &quot;daily&quot;: {
+<span class="nc" id="L555">		    			result = user.showDailyProgress(event.getSource().getUserId());</span>
+<span class="nc" id="L556">		    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L557">		    			break;</span>
+		    		}
+		    		case &quot;food&quot;: {
+<span class="nc" id="L560">		    			categories = Categories.FOOD;</span>
+<span class="nc" id="L561">	    				result = &quot;Enter a food name and I will provide you with the details!&quot;;</span>
+<span class="nc" id="L562">		    			break;</span>
+		    		}
+		    		case &quot;menu&quot;: {
+<span class="nc" id="L565">		    			categories = Categories.MENU;</span>
+<span class="nc" id="L566">		    			result = &quot;You may input the menu in the following three ways:\n&quot;</span>
+		    				+ &quot;Text\n&quot;
+		    				+ &quot;URL\n&quot;
+		    				+ &quot;JPEG&quot;;
+<span class="nc" id="L570">		    			break;</span>
+		    		}
+		    		case &quot;initdb&quot;: {
+<span class="nc" id="L573">		    			categories = Categories.INIT;</span>
+<span class="nc" id="L574">		    			result = &quot;Initializing...&quot;;</span>
+<span class="nc" id="L575">		    			break;</span>
+		    		}
+		    		case &quot;friend&quot;: {
+<span class="nc" id="L578">		    			String uniqueCode = user.makeRecommendation(event.getSource().getUserId());</span>
+<span class="nc bnc" id="L579" title="All 2 branches missed.">		    			if (uniqueCode == null) {</span>
+<span class="nc" id="L580">		    				result = &quot;There is no campaign currently&quot;;</span>
+		    			}
+		    			else {
+<span class="nc" id="L583">			    			result = &quot;Your unique code is &quot; + uniqueCode;</span>
+		    			}
+<span class="nc" id="L585">		    			break;</span>
+		    		}
+		    		case &quot;code&quot;: {
+<span class="nc bnc" id="L588" title="All 18 branches missed.">		    			switch(user.checkValidityOfUser(event.getSource().getUserId())) {</span>
+			    			case &quot;claimed&quot;:
+<span class="nc" id="L590">			    				result = &quot;You already accepted a recommendation&quot;;</span>
+<span class="nc" id="L591">			    				break;</span>
+			    			case &quot;taken&quot;:
+<span class="nc" id="L593">			    				result = &quot;This recommendation code is already used&quot;;</span>
+<span class="nc" id="L594">			    				break;</span>
+			    			case &quot;before&quot;:
+<span class="nc" id="L596">			    				result = &quot;This campaign started after you registered&quot;;</span>
+<span class="nc" id="L597">			    				break;</span>
+			    			case &quot;valid&quot;:
+<span class="nc" id="L599">				    			result = &quot;Insert the 6 digit code&quot;;</span>
+<span class="nc" id="L600">			    				categories = Categories.CODE;</span>
+			    				break;	
+		    			}
+		    			
+<span class="nc" id="L604">		    			break;</span>
+		    		}
+		    		case &quot;admin&quot;: {
+<span class="nc bnc" id="L607" title="All 2 branches missed.">		    			if (user.isAdmin(event.getSource().getUserId())) {</span>
+<span class="nc" id="L608">		    				result = &quot;Please upload the photo of the coupon&quot;;</span>
+<span class="nc" id="L609">		    				categories = Categories.CAMPAIGN;</span>
+		    			}
+		    			else {
+<span class="nc" id="L612">		    				result = &quot;You are not an admin&quot;;</span>
+		    			}
+		    		}
+		    		
+			}
+		}
+		else {
+<span class="nc" id="L619">			result = &quot;I don't understand&quot;;</span>
+		}
+
+<span class="nc" id="L622">		return result;</span>
+	}
+	
+	/** This method handles the profile function.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
+	private String handleProfile (String replyToken, String text, Event event) {
+<span class="nc" id="L633">		String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L634" title="All 2 branches missed.">		if (profile == null) {</span>
+<span class="nc" id="L635">			Matcher m = Pattern.compile(&quot;gender|age|height|weight|meal|view|interest&quot;, Pattern.CASE_INSENSITIVE).matcher(text);</span>
+<span class="nc bnc" id="L636" title="All 2 branches missed.">			if (m.find()) {</span>
+<span class="nc bnc" id="L637" title="All 30 branches missed.">				switch (m.group().toLowerCase()) {</span>
+						case &quot;gender&quot;:{
+<span class="nc" id="L639">							profile = Profile.SET_GENDER;</span>
+<span class="nc" id="L640">							ConfirmTemplate confirmTemplate = new ConfirmTemplate(</span>
+			                        &quot;Tell me your gender&quot;,
+			                        new MessageAction(&quot;Male&quot;, &quot;Male&quot;),
+			                        new MessageAction(&quot;Female&quot;, &quot;Female&quot;)
+			                );
+<span class="nc" id="L645">							TemplateMessage templateMessage = new TemplateMessage(&quot;Confirm alt text&quot;, confirmTemplate);</span>
+<span class="nc" id="L646">			                this.reply(replyToken, templateMessage);			                </span>
+<span class="nc" id="L647">			                break;</span>
+						}
+						case &quot;age&quot;:{
+<span class="nc" id="L650">							profile = Profile.SET_AGE;</span>
+<span class="nc" id="L651">							result = &quot;Tell me your current age&quot;;</span>
+<span class="nc" id="L652">							break;</span>
+						}
+						case &quot;height&quot;:{
+<span class="nc" id="L655">							profile = Profile.SET_HEIGHT;</span>
+<span class="nc" id="L656">							result = &quot;Tell me your current height(cm)&quot;;</span>
+<span class="nc" id="L657">							break;</span>
+						}
+			    		case &quot;weight&quot;: {
+<span class="nc" id="L660">			    			profile = Profile.INPUT_WEIGHT;</span>
+<span class="nc" id="L661">			    			result = &quot;Tell me your current weight(kg)&quot;;</span>
+<span class="nc" id="L662">			    			break;</span>
+			    		}
+			    		case &quot;meal&quot;: {
+<span class="nc" id="L665">			    			profile = Profile.INPUT_MEAL;</span>
+<span class="nc" id="L666">			    			result = &quot;What did you just eat?&quot;;</span>
+<span class="nc" id="L667">			    			break;</span>
+			    		}
+			    		
+			    		case &quot;view&quot;: {
+<span class="nc" id="L671">			    			profile = Profile.REQUEST_PROFILE;</span>
+<span class="nc" id="L672">			    			result = &quot;Would you like to view your \&quot;general\&quot; profile, or your past \&quot;weights\&quot; or \&quot;meals\&quot;?&quot;;</span>
+<span class="nc" id="L673">			    			break;</span>
+			    		}
+			    		
+			    		case &quot;interest&quot;: {
+<span class="nc" id="L677">			    			profile = Profile.SET_INTEREST;</span>
+<span class="nc" id="L678">			                String imageUrl = createUri(&quot;/static/buttons/foodCat.jpg&quot;);</span>
+<span class="nc" id="L679">			                CarouselTemplate interestCarouselTemplate = new CarouselTemplate(</span>
+<span class="nc" id="L680">			                        Arrays.asList(</span>
+<span class="nc" id="L681">			                                new CarouselColumn(imageUrl, &quot;Select your interests&quot;, &quot;Type \&quot;done\&quot; if you finish, \&quot;reset\&quot; if you want to reset&quot;, Arrays.asList(</span>
+			                                        new MessageAction(&quot;Breakfast/Eggs&quot;, &quot;Dairy and Egg Products/ Breakfast Cereals&quot;),
+			                                        new MessageAction(&quot;Fast Foods&quot;, &quot;Fast Foods/ Fats and Oils&quot;),
+			                                        new MessageAction(&quot;Spices/Herbs/Sauces&quot;, &quot;Spices and Herbs/ Soups, Sauces, and Gravies&quot;)
+			                                )),
+<span class="nc" id="L686">			                                new CarouselColumn(imageUrl, &quot;Select your interests&quot;, &quot;Type \&quot;done\&quot; if you finish, \&quot;reset\&quot; if you want to reset&quot;, Arrays.asList(</span>
+			                                        new MessageAction(&quot;Sweets and Snacks&quot;, &quot;Sweets/ Snacks&quot;),
+			                                        new MessageAction(&quot;Pork and meat&quot;, &quot;Pork Products/ Sausages and Luncheon Meats&quot;),
+			                                        new MessageAction(&quot;Beef&quot;, &quot;Beef Products&quot;)
+			                                )),
+<span class="nc" id="L691">			                                new CarouselColumn(imageUrl, &quot;Select your interests&quot;, &quot;Type \&quot;done\&quot; if you finish, \&quot;reset\&quot; if you want to reset&quot;, Arrays.asList(</span>
+			                                        new MessageAction(&quot;Chicken&quot;, &quot;Poultry Products&quot;),
+			                                        new MessageAction(&quot;Lamb&quot;, &quot;Lamb, Veal, and Game Products&quot;),
+			                                        new MessageAction(&quot;Nuts and Seeds&quot;, &quot;Nut and Seed Products&quot;)
+			                                )),
+<span class="nc" id="L696">			                                new CarouselColumn(imageUrl, &quot;Select your interests&quot;, &quot;Type \&quot;done\&quot; if you finish, \&quot;reset\&quot; if you want to reset&quot;, Arrays.asList(</span>
+			                                        new MessageAction(&quot;Fruits/Vegetables&quot;, &quot;Fruits and Fruit Juices/ Vegetables and Vegetable Products&quot;),
+			                                        new MessageAction(&quot;Beverages&quot;, &quot;Beverages&quot;),
+			                                        new MessageAction(&quot;Country Cuisines&quot;, &quot;American Indian/Alaska Native Foods/ Meals, Entrees, and Sidedishes&quot;)
+			                                )),
+<span class="nc" id="L701">			                                new CarouselColumn(imageUrl, &quot;Select your interests&quot;, &quot;Type \&quot;done\&quot; if you finish, \&quot;reset\&quot; if you want to reset&quot;, Arrays.asList(</span>
+			                                        new MessageAction(&quot;Bakeries&quot;, &quot;Baked Products&quot;),
+			                                        new MessageAction(&quot;Rice, Pasta, Grains&quot;, &quot;Cereal Grains and Pasta&quot;),
+			                                        new MessageAction(&quot;Baby Food&quot;, &quot;Baby Foods&quot;)
+			                                ))
+			                                
+			                        ));
+<span class="nc" id="L708">			                TemplateMessage interestTemplateMessage = new TemplateMessage(&quot;Choosing your interests&quot;, interestCarouselTemplate);</span>
+<span class="nc" id="L709">			                this.reply(replyToken, interestTemplateMessage);</span>
+<span class="nc" id="L710">			    			break;</span>
+			    		}
+				}
+			}
+			else {
+<span class="nc" id="L715">				result = &quot;I don't understand&quot;;</span>
+			}
+<span class="nc" id="L717">		}</span>
+		else {
+<span class="nc" id="L719">			boolean nan = false;</span>
+<span class="nc bnc" id="L720" title="All 8 branches missed.">			switch (profile) {</span>
+					case SET_GENDER:
+<span class="nc" id="L722">						user.inputGender(&quot;&quot;+ event.getSource().getUserId(),text);</span>
+<span class="nc" id="L723">						result = &quot;I successfully recorded your gender&quot;;</span>
+<span class="nc" id="L724">						profile = null;</span>
+<span class="nc" id="L725">		    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L726">		    			break;</span>
+					case SET_AGE:
+						try {
+<span class="nc" id="L729">			    			user.inputAge(&quot;&quot;+ event.getSource().getUserId(),Integer.parseInt(text));</span>
+<span class="nc" id="L730">		    			} catch (NumberFormatException e) {</span>
+		    			    //error
+<span class="nc" id="L732">		    				nan= true;</span>
+<span class="nc" id="L733">		    				return &quot;Not a number. Please enter again&quot;;</span>
+<span class="nc" id="L734">		    			}</span>
+<span class="nc bnc" id="L735" title="All 2 branches missed.">						if (Integer.parseInt(text)&lt;=0) {</span>
+<span class="nc" id="L736">							nan = true;</span>
+<span class="nc" id="L737">							return &quot;Please enter a number greater than 0.&quot;;</span>
+						}
+<span class="nc bnc" id="L739" title="All 2 branches missed.">		    			if (!nan) {</span>
+<span class="nc" id="L740">			    			result = &quot;I successfully recorded your age&quot;;</span>
+<span class="nc" id="L741">			    			profile = null;</span>
+<span class="nc" id="L742">			    			categories = Categories.MAIN_MENU;</span>
+		    			}
+		    			break;
+					case SET_HEIGHT:
+						try {
+<span class="nc" id="L747">			    			user.inputHeight(&quot;&quot;+ event.getSource().getUserId(),Double.parseDouble(text));</span>
+<span class="nc" id="L748">		    			} catch (NumberFormatException e) {</span>
+		    			    //error
+<span class="nc" id="L750">		    				nan= true;</span>
+<span class="nc" id="L751">		    				return &quot;Not a number. Please enter again&quot;;</span>
+<span class="nc" id="L752">		    			}</span>
+<span class="nc bnc" id="L753" title="All 2 branches missed.">						if (Double.parseDouble(text)&lt;=0) {</span>
+<span class="nc" id="L754">							nan = true;</span>
+<span class="nc" id="L755">							return &quot;Please enter a number greater than 0.&quot;;</span>
+						}
+<span class="nc bnc" id="L757" title="All 2 branches missed.">		    			if (!nan) {</span>
+<span class="nc" id="L758">			    			result = &quot;I successfully recorded your height&quot;;</span>
+<span class="nc" id="L759">			    			profile = null;</span>
+<span class="nc" id="L760">			    			categories = Categories.MAIN_MENU;</span>
+		    			}
+		    			break;
+		    		case INPUT_WEIGHT:
+		    			try {
+<span class="nc" id="L765">			    			user.inputWeight(&quot;&quot;+ event.getSource().getUserId(),Double.parseDouble(text));</span>
+<span class="nc" id="L766">		    			} catch (NumberFormatException e) {</span>
+		    			    //error
+<span class="nc" id="L768">		    				nan= true;</span>
+<span class="nc" id="L769">		    				return &quot;Not a number. Please enter again&quot;;</span>
+<span class="nc" id="L770">		    			}</span>
+<span class="nc bnc" id="L771" title="All 2 branches missed.">		    			if (Double.parseDouble(text)&lt;=0) {</span>
+<span class="nc" id="L772">							nan = true;</span>
+<span class="nc" id="L773">							return &quot;Please enter a number greater than 0.&quot;;</span>
+						}
+<span class="nc bnc" id="L775" title="All 2 branches missed.">		    			if (!nan) {</span>
+<span class="nc" id="L776">			    			result = &quot;I successfully recorded your weight&quot;;</span>
+<span class="nc" id="L777">			    			profile = null;</span>
+<span class="nc" id="L778">			    			categories = Categories.MAIN_MENU;</span>
+		    			}
+				    	break;
+		    		case INPUT_MEAL:
+<span class="nc" id="L782">		    			user.inputMeal(&quot;&quot;+ event.getSource().getUserId(),text);</span>
+<span class="nc" id="L783">		    			result = &quot;I successfully recorded your meal&quot;;</span>
+<span class="nc" id="L784">		    			profile = null;</span>
+<span class="nc" id="L785">		    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L786">		    			break;</span>
+		    		case SET_INTEREST:
+<span class="nc bnc" id="L788" title="All 2 branches missed.">		    			if(text.toLowerCase().equals(&quot;done&quot;)) {</span>
+<span class="nc" id="L789">			    			result = &quot;Your interests were recorded.&quot;;</span>
+<span class="nc" id="L790">			    			profile = null;</span>
+<span class="nc" id="L791">			    			categories = Categories.MAIN_MENU;</span>
+<span class="nc bnc" id="L792" title="All 2 branches missed.">		    			} else if(text.toLowerCase().equals(&quot;reset&quot;)) {</span>
+<span class="nc" id="L793">		    				result = user.resetInterest(&quot;&quot;+ event.getSource().getUserId());</span>
+		    			} else {
+<span class="nc" id="L795">			    			result = user.inputInterest(&quot;&quot;+ event.getSource().getUserId(),text);</span>
+		    			}
+<span class="nc" id="L797">		    			break;</span>
+		    		case REQUEST_PROFILE:
+<span class="nc" id="L799">		    			result = handRequestProfile(text, event);</span>
+		    			
+		    			break;
+			}
+		}
+<span class="nc" id="L804">		return result;</span>
+
+	}
+	
+	/** This method handles the viewing option in the profile function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
+	private String handRequestProfile (String text, Event event) {
+<span class="nc" id="L815">		String result = &quot;&quot;;</span>
+		
+<span class="nc" id="L817">		Matcher m = Pattern.compile(&quot;weight|meal|general&quot;, Pattern.CASE_INSENSITIVE).matcher(text);</span>
+<span class="nc bnc" id="L818" title="All 2 branches missed.">		if (m.find()) {</span>
+<span class="nc bnc" id="L819" title="All 14 branches missed.">			switch (m.group().toLowerCase()) {</span>
+				case &quot;weight&quot;: {
+<span class="nc" id="L821">					result = user.outputWeight(&quot;&quot;+event.getSource().getUserId());</span>
+<span class="nc" id="L822">					break;</span>
+				}
+				case &quot;meal&quot;: {
+<span class="nc" id="L825">					result = user.outputMeal(&quot;&quot;+event.getSource().getUserId());</span>
+<span class="nc" id="L826">					break;</span>
+				}
+				case &quot;general&quot;: {
+<span class="nc" id="L829">					result = user.outputGeneral(&quot;&quot;+event.getSource().getUserId());</span>
+<span class="nc" id="L830">					result += user.outputInterest(&quot;&quot;+event.getSource().getUserId());</span>
+<span class="nc" id="L831">					System.out.println(&quot;interest works here&quot;);</span>
+					break;
+				}
+			}
+<span class="nc" id="L835">			profile = null;</span>
+<span class="nc" id="L836">			categories = Categories.MAIN_MENU;</span>
+		}
+		else {
+<span class="nc" id="L839">			result = &quot;Did not understand&quot;;</span>
+		}
+<span class="nc" id="L841">		return result;</span>
+	}
+	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @return the corresponding response to the user
+	 */
+	private String handleFood (String text) {
+<span class="nc" id="L850">		categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L851">		String result = &quot;&quot;;</span>
+<span class="nc" id="L852">		result = inputToFood.getFoodDetails(text);</span>
+<span class="nc" id="L853">		return result;</span>
+	}
+	
+	/** This method handles the initialization of the food database.
+	 * 
+	 */
+	private void handleInit() {
+		try {
+<span class="nc" id="L861">            String filePath = &quot;/app/FOOD_DATA.txt&quot;;</span>
+<span class="nc" id="L862">            String line = null;</span>
+<span class="nc" id="L863">            FileReader fileReader = new FileReader(filePath);</span>
+<span class="nc" id="L864">            BufferedReader bufferedReader = new BufferedReader(fileReader);</span>
+<span class="nc bnc" id="L865" title="All 2 branches missed.">            while ((line = bufferedReader.readLine()) != null) {</span>
+<span class="nc" id="L866">                System.out.println(line);</span>
+
+<span class="nc" id="L868">                String[] foodData = line.split(&quot;\\^&quot;);</span>
+<span class="nc bnc" id="L869" title="All 2 branches missed.">        		for (int i = 2; i &lt; foodData.length; i++) {</span>
+<span class="nc bnc" id="L870" title="All 2 branches missed.">        			if (foodData[i].equals(&quot;&quot;)) {</span>
+<span class="nc" id="L871">        				foodData[i] = &quot;-1&quot;;</span>
+        			}
+        		}
+<span class="nc" id="L874">                String foodName = foodData[0];</span>
+<span class="nc" id="L875">                String category = foodData[1];</span>
+<span class="nc" id="L876">                double calories = Double.parseDouble(foodData[2]);</span>
+<span class="nc" id="L877">                double sodium = Double.parseDouble(foodData[3]);</span>
+<span class="nc" id="L878">                double fat = Double.parseDouble(foodData[4]);</span>
+<span class="nc" id="L879">                double protein = Double.parseDouble(foodData[5]);</span>
+<span class="nc" id="L880">                double carbohydrate = Double.parseDouble(foodData[6]);</span>
+<span class="nc" id="L881">                Food food = new Food();</span>
+<span class="nc" id="L882">                food.setName(foodName);</span>
+<span class="nc" id="L883">                food.setCategory(category);</span>
+<span class="nc" id="L884">                food.setCalories(calories);</span>
+<span class="nc" id="L885">                food.setSodium(sodium);</span>
+<span class="nc" id="L886">                food.setSaturatedFat(fat);</span>
+<span class="nc" id="L887">                food.setProtein(protein);</span>
+<span class="nc" id="L888">                food.setCarbohydrate(carbohydrate);</span>
+<span class="nc" id="L889">                foodRepository.save(food);</span>
+<span class="nc" id="L890">            }</span>
+<span class="nc" id="L891">            bufferedReader.close();</span>
+<span class="nc" id="L892">        } catch (Exception e) {</span>
+<span class="nc" id="L893">            e.printStackTrace();</span>
+        } finally {
+<span class="nc" id="L895">        	categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L896">        }</span>
+<span class="nc" id="L897">	}</span>
+	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
+	private String handleMenu (String text, Event event) {
+<span class="nc" id="L906">		String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L907" title="All 2 branches missed.">		if(menu == null) {</span>
+<span class="nc" id="L908">			Matcher m = Pattern.compile(&quot;text|url|jpeg&quot;, Pattern.CASE_INSENSITIVE).matcher(text);</span>
+<span class="nc bnc" id="L909" title="All 2 branches missed.">			if (m.find()) {</span>
+<span class="nc bnc" id="L910" title="All 14 branches missed.">				switch (m.group().toLowerCase()) {</span>
+			    		case &quot;text&quot;: {
+<span class="nc" id="L912">	                        menu = Menu.TEXT;</span>
+<span class="nc" id="L913">			    			break;</span>
+			    		}
+			    		case &quot;url&quot;: {
+<span class="nc" id="L916">			    			menu = Menu.URL;</span>
+<span class="nc" id="L917">			    			break;</span>
+			    		}
+			    		case &quot;jpeg&quot;: {
+<span class="nc" id="L920">			    			menu = Menu.JPEG;</span>
+			    			break;
+			    		}
+				}
+<span class="nc" id="L924">				result = &quot;OK! Show me the menu now!&quot;;</span>
+			}
+			else {
+<span class="nc" id="L927">				result = &quot;I don't understand&quot;;</span>
+			}
+<span class="nc" id="L929">		}</span>
+		else {
+<span class="nc bnc" id="L931" title="All 4 branches missed.">			switch (menu) {</span>
+    		case TEXT:
+<span class="nc" id="L933">                result = inputToFood.readFromText(&quot;&quot;+event.getSource().getUserId(), text);</span>
+<span class="nc" id="L934">                menu = null;</span>
+<span class="nc" id="L935">    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L936">    			break;</span>
+    		case URL:
+<span class="nc" id="L938">    			result = inputToFood.readFromJSON(text);</span>
+<span class="nc" id="L939">    			result = inputToFood.readFromText(&quot;&quot;+event.getSource().getUserId(), result);</span>
+<span class="nc" id="L940">    			menu = null;</span>
+<span class="nc" id="L941">    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L942">    			break;</span>
+    		case JPEG:
+<span class="nc" id="L944">    			menu = null;</span>
+<span class="nc" id="L945">    			categories = Categories.MAIN_MENU;</span>
+<span class="nc" id="L946">    			break;</span>
+    		default:
+<span class="nc" id="L948">    			result = &quot;I don't understand&quot;;</span>
+    			break;
+			}
+		}
+<span class="nc" id="L952">		return result;</span>
+			
+	}
+	
+	/** This method handles the unique 6-digit code from the user.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
+	private String handleCode (String text, Event event) {
+<span class="nc" id="L963">		List&lt;Message&gt; messages = new ArrayList&lt;Message&gt;();</span>
+<span class="nc" id="L964">		String result = &quot;&quot;;</span>
+		
+<span class="nc" id="L966">		String id = user.acceptRecommendation(text ,event.getSource().getUserId());</span>
+			
+<span class="nc bnc" id="L968" title="All 2 branches missed.">		if (!id.contains(&quot;Error&quot;)) {</span>
+<span class="nc" id="L969">			DownloadedContent jpg = saveContentFromDB(&quot;jpg&quot;, user.getCoupon());</span>
+<span class="nc" id="L970">			messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));</span>
+<span class="nc" id="L971">			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);</span>
+<span class="nc" id="L972">		}</span>
+			
+		else {
+<span class="nc" id="L975">			messages.add(new TextMessage(id));</span>
+		}	
+		
+<span class="nc" id="L978">		messages.add(getMenuTemplate());</span>
+
+<span class="nc" id="L980">		reply(((MessageEvent) event).getReplyToken(), messages);</span>
+		
+<span class="nc" id="L982">		categories = Categories.MAIN_MENU;</span>
+		
+<span class="nc" id="L984">		return result;</span>
+	}
+	
+
+	
+	static String createUri(String path) {
+<span class="nc" id="L990">		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();</span>
+	}
+
+	private void system(String... args) {
+<span class="nc" id="L994">		ProcessBuilder processBuilder = new ProcessBuilder(args);</span>
+		try {
+<span class="nc" id="L996">			Process start = processBuilder.start();</span>
+<span class="nc" id="L997">			int i = start.waitFor();</span>
+<span class="nc" id="L998">			log.info(&quot;result: {} =&gt;  {}&quot;, Arrays.toString(args), i);</span>
+<span class="nc" id="L999">		} catch (IOException e) {</span>
+<span class="nc" id="L1000">			throw new UncheckedIOException(e);</span>
+<span class="nc" id="L1001">		} catch (InterruptedException e) {</span>
+<span class="nc" id="L1002">			log.info(&quot;Interrupted&quot;, e);</span>
+<span class="nc" id="L1003">			Thread.currentThread().interrupt();</span>
+<span class="nc" id="L1004">		}</span>
+<span class="nc" id="L1005">	}</span>
+
+	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
+<span class="nc" id="L1008">		log.info(&quot;Got content-type: {}&quot;, responseBody);</span>
+
+<span class="nc" id="L1010">		DownloadedContent tempFile = createTempFile(ext);</span>
+<span class="nc" id="L1011">		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {</span>
+<span class="nc" id="L1012">			ByteStreams.copy(responseBody.getStream(), outputStream);</span>
+<span class="nc" id="L1013">			log.info(&quot;Saved {}: {}&quot;, ext, tempFile);</span>
+<span class="nc" id="L1014">			return tempFile;</span>
+<span class="nc bnc" id="L1015" title="All 8 branches missed.">		} catch (IOException e) {</span>
+<span class="nc" id="L1016">			throw new UncheckedIOException(e);</span>
+		}
+	}
+	private static DownloadedContent saveContentFromDB(String ext, byte[] bytes) {
+		
+<span class="nc" id="L1021">		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);</span>
+<span class="nc" id="L1022">		DownloadedContent tempFile = createTempFile(ext);</span>
+<span class="nc" id="L1023">		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {</span>
+<span class="nc" id="L1024">			ByteStreams.copy(bis, outputStream);</span>
+<span class="nc" id="L1025">			return tempFile;</span>
+<span class="nc bnc" id="L1026" title="All 8 branches missed.">		} catch (IOException e) {</span>
+<span class="nc" id="L1027">			throw new UncheckedIOException(e);</span>
+		}
+	}
+
+	private static DownloadedContent createTempFile(String ext) {
+<span class="nc" id="L1032">		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;</span>
+<span class="nc" id="L1033">		Path tempFile = KitchenSinkApplication.downloadedContentDir.resolve(fileName);</span>
+<span class="nc" id="L1034">		tempFile.toFile().deleteOnExit();</span>
+<span class="nc" id="L1035">		return new DownloadedContent(tempFile, createUri(&quot;/downloaded/&quot; + tempFile.getFileName()));</span>
+	}
+
+<span class="nc" id="L1038">	public KitchenSinkController() {</span>
+<span class="nc" id="L1039">		database = new SQLDatabaseEngine();</span>
+<span class="nc" id="L1040">		itscLOGIN = System.getenv(&quot;ITSC_LOGIN&quot;);</span>
+<span class="nc" id="L1041">	}</span>
+
+	private DatabaseEngine database;
+	private String itscLOGIN;
+	
+
+	//The annontation @Value is from the package lombok.Value
+	//Basically what it does is to generate constructor and getter for the class below
+	//See https://projectlombok.org/features/Value
+<span class="pc bnc" id="L1050" title="All 20 branches missed.">	@Value</span>
+	public static class DownloadedContent {
+<span class="fc" id="L1052">		Path path;</span>
+<span class="fc" id="L1053">		String uri;</span>
+	}
+
+
+	//an inner class that gets the user profile and status message
+	class ProfileGetter implements BiConsumer&lt;UserProfileResponse, Throwable&gt; {
+		private KitchenSinkController ksc;
+		private String replyToken;
+		
+<span class="nc" id="L1062">		public ProfileGetter(KitchenSinkController ksc, String replyToken) {</span>
+<span class="nc" id="L1063">			this.ksc = ksc;</span>
+<span class="nc" id="L1064">			this.replyToken = replyToken;</span>
+<span class="nc" id="L1065">		}</span>
+		@Override
+    	public void accept(UserProfileResponse profile, Throwable throwable) {
+<span class="nc bnc" id="L1068" title="All 2 branches missed.">    		if (throwable != null) {</span>
+<span class="nc" id="L1069">            	ksc.replyText(replyToken, throwable.getMessage());</span>
+<span class="nc" id="L1070">            	return;</span>
+        	}
+<span class="nc" id="L1072">        	ksc.reply(</span>
+                	replyToken,
+<span class="nc" id="L1074">                	Arrays.asList(new TextMessage(</span>
+<span class="nc" id="L1075">                		&quot;Display name: &quot; + profile.getDisplayName()),</span>
+                              	new TextMessage(&quot;Status message: &quot;
+<span class="nc" id="L1077">                            		  + profile.getStatusMessage()))</span>
+        	);
+<span class="nc" id="L1079">    	}</span>
+    }
+	
+	
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

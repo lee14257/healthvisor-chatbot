@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.MenuTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-11-20T14:18:39" hostname="Woos-MacBook-Pro.local" time="0.003">
+  <properties/>
+  <testcase name="testNotFound" classname="com.example.bot.spring.MenuTest" time="0.003"/>
+  <system-out><![CDATA[2017-11-20 22:18:29.724  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.example.bot.spring.MenuTest], using SpringBootContextLoader
+2017-11-20 22:18:29.726  INFO 77666 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [com.example.bot.spring.MenuTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+2017-11-20 22:18:29.733  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 22:18:29.736  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@415c4fec, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6aa24e0c, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@258df576, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1094d366, org.springframework.test.context.transaction.TransactionalTestExecutionListener@3314cdb7, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4bbe37f7, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@1d25db3, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@37ebb10c, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@2207bb33, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@18bc210b, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@b10d86a, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@61197bd5]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.4.2.RELEASE)
+
+2017-11-20 22:18:39.808  INFO 77666 --- [    Test worker] com.example.bot.spring.MenuTest          : Starting MenuTest on Woos-MacBook-Pro.local with PID 77666 (started by woochanlee in /Users/woochanlee/Desktop/dietBot/my-fork/sample-spring-boot-kitchensink)
+2017-11-20 22:18:39.808  INFO 77666 --- [    Test worker] com.example.bot.spring.MenuTest          : No active profile set, falling back to default profiles: default
+2017-11-20 22:18:39.813  INFO 77666 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@138649f9: startup date [Mon Nov 20 22:18:39 HKT 2017]; root of context hierarchy
+2017-11-20 22:18:39.861  INFO 77666 --- [    Test worker] com.example.bot.spring.MenuTest          : Started MenuTest in 10.118 seconds (JVM running for 124.676)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

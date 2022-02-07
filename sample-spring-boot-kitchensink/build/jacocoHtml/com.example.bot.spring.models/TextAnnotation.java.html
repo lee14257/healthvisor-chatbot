@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TextAnnotation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring.models</a> &gt; <span class="el_source">TextAnnotation.java</span></div><h1>TextAnnotation.java</h1><pre class="source lang-java linenums">package com.example.bot.spring.models;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class TextAnnotation {
+	
+	/** This is the text annotation for the OCR.
+	 * 
+	 */
+	
+	/** This is the locale of the text annotation.
+	 * 
+	 */
+	private String locale;
+	
+	/** This is the description for the text annotation.
+	 * 
+	 */
+	private String description;
+	
+	/** This is the bounding polygon for the text annotation.
+	 * 
+	 */
+	private BoundingPolygon boundingPoly;
+	
+	/** This is the constructor for the text annotation.
+	 * 
+	 */
+<span class="fc" id="L30">	public TextAnnotation() {}</span>
+	
+	/** This method is the getter for the locale.
+	 * 
+	 * @return the locale
+	 */
+	public String getLocale() {
+<span class="nc" id="L37">		return locale;</span>
+	}
+	
+	/** This method is the setter for the locale.
+	 * 
+	 * @param locale the locale
+	 */
+	public void setLocale(String locale) {
+<span class="fc" id="L45">		this.locale = locale;</span>
+<span class="fc" id="L46">	}</span>
+	
+	/** This method is the getter for the description.
+	 * 
+	 * @return the description
+	 */
+	public String getDescription() {
+<span class="fc" id="L53">		return description;</span>
+	}
+	
+	/** This method is the setter for the description.
+	 * 
+	 * @param description the description
+	 */
+	public void setDescription(String description) {
+<span class="fc" id="L61">		this.description = description;</span>
+<span class="fc" id="L62">	}</span>
+	
+	/** This method is the getter for the bounding polygon.
+	 * 
+	 * @return the bounding polygon
+	 */
+	public BoundingPolygon getBoundingPoly() {
+<span class="nc" id="L69">		return boundingPoly;</span>
+	}
+	
+	/** This method is the setter for the bounding polygon.
+	 * 
+	 * @param boundingPoly the bounding polygon
+	 */
+	public void setBoundingPoly(BoundingPolygon boundingPoly) {
+<span class="fc" id="L77">		this.boundingPoly = boundingPoly;</span>
+<span class="fc" id="L78">	}</span>
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class BoundingPolygon {
+	
+	/** This is the bounding polygon for the OCR.
+	 * 
+	 */
+	
+	/** This is an array of the vertices of the bounding polygon.
+	 * 
+	 */
+	private Point[] vertices;
+	
+	/** This is the constructor of the bounding polygon.
+	 * 
+	 */
+<span class="fc" id="L96">	public BoundingPolygon() {}</span>
+	
+	/** This is the getter of the vertices of the bounding polygon.
+	 * 
+	 * @return the vertices of the bounding polygon
+	 */
+	public Point[] getVertices() {
+<span class="nc" id="L103">		return vertices;</span>
+	}
+	
+	/** This is the setter of the vertices of the bounding polygon.
+	 * 
+	 * @param vertices the vertices of the bounding polygon
+	 */
+	public void setVertices(Point[] vertices) {
+<span class="fc" id="L111">		this.vertices = vertices;</span>
+<span class="fc" id="L112">	}</span>
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class Point {
+	
+	/** This is the point object for the OCR.
+	 * 
+	 */
+	
+	/** The x-value of the point.
+	 * 
+	 */
+	private int x;
+	
+	/** The y-value of the point.
+	 * 
+	 */
+	private int y;
+	
+	/** The constructor of the point object.
+	 * 
+	 */
+<span class="fc" id="L135">	public Point() {}</span>
+	
+	/** This method is the getter for the x-value.
+	 * 
+	 * @return the x-value of the point
+	 */
+	public int getX() {
+<span class="nc" id="L142">		return x;</span>
+	}
+	
+	/** This method is the setter for the x-value.
+	 * 
+	 * @param x the x-value of the point
+	 */
+	public void setX(int x) {
+<span class="fc" id="L150">		this.x = x;</span>
+<span class="fc" id="L151">	}</span>
+	
+	/** This method is the getter for the y-value.
+	 * 
+	 * @return the y-value of the point
+	 */
+	public int getY() {
+<span class="nc" id="L158">		return y;</span>
+	}
+	
+	/** This method is the setter for the y-value.
+	 * 
+	 * @param y the y-value of the point
+	 */
+	public void setY(int y) {
+<span class="fc" id="L166">		this.y = y;</span>
+<span class="fc" id="L167">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

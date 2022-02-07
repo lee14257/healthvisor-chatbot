@@ -1,0 +1,25 @@
+~0100~^~Dairy and Egg Products~     1
+~0200~^~Spices and Herbs~.     3
+~0300~^~Baby Foods~.      12
+~0400~^~Fats and Oils~.       2
+~0500~^~Poultry Products~        6
+~0600~^~Soups, Sauces, and Gravies~.       3
+~0700~^~Sausages and Luncheon Meats~      6
+~0800~^~Breakfast Cereals~.      1
+~0900~^~Fruits and Fruit Juices~.      8
+~1000~^~Pork Products~        6
+~1100~^~Vegetables and Vegetable Products~      8
+~1200~^~Nut and Seed Products~.     7
+~1300~^~Beef Products~        6
+~1400~^~Beverages~.      9
+~1500~^~Finfish and Shellfish Products~       6
+~1600~^~Legumes and Legume Products~.   7
+~1700~^~Lamb, Veal, and Game Products~     6
+~1800~^~Baked Products~.      10
+~1900~^~Sweets~.       5
+~2000~^~Cereal Grains and Pasta~.      11
+~2100~^~Fast Foods~.       2
+~2200~^~Meals, Entrees, and Sidedishes~.    4*
+~2500~^~Snacks~.     5
+~3500~^~American Indian/Alaska Native Foods~.      4*
+~3600~^~Restaurant Foods~.     4

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SQLDatabaseEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring</a> &gt; <span class="el_source">SQLDatabaseEngine.java</span></div><h1>SQLDatabaseEngine.java</h1><pre class="source lang-java linenums">package com.example.bot.spring;
+
+import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.sql.*;
+import java.net.URISyntaxException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+
+<span class="fc" id="L13">@Slf4j</span>
+<span class="fc" id="L14">public class SQLDatabaseEngine extends DatabaseEngine {</span>
+	@Override
+	String search(String text) throws Exception {
+<span class="fc" id="L17">		String result = null;</span>
+		try {
+<span class="fc" id="L19">			Connection connection = getConnection();</span>
+<span class="fc" id="L20">			PreparedStatement stmt = connection.prepareStatement(</span>
+					&quot;UPDATE responsetable SET hits = hits+1 WHERE concat('%', ?, '%') LIKE '%' || keyword || '%' RETURNING response, hits&quot;);
+<span class="fc" id="L22">			stmt.setString(1, text);</span>
+<span class="fc" id="L23">			ResultSet rs = stmt.executeQuery();</span>
+			
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">			while (rs.next()) {</span>
+<span class="nc" id="L26">				result = rs.getString(1) + &quot; Hits: &quot; + rs.getInt(2);</span>
+			}
+<span class="fc" id="L28">			rs.close();</span>
+<span class="fc" id="L29">			stmt.close();</span>
+<span class="fc" id="L30">			connection.close();</span>
+<span class="nc" id="L31">		} catch (Exception e) {</span>
+<span class="nc" id="L32">			log.info(&quot;Exception while getting data from database: {}&quot;, e.toString());</span>
+<span class="fc" id="L33">		}</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">		if (result != null)</span>
+<span class="nc" id="L35">			return result;</span>
+<span class="fc" id="L36">		throw new Exception(&quot;NOT FOUND&quot;);</span>
+	}
+	
+	private Connection getConnection() throws URISyntaxException, SQLException {
+		Connection connection;
+<span class="fc" id="L41">		URI dbUri = new URI(System.getenv(&quot;DATABASE_URL&quot;));</span>
+
+<span class="fc" id="L43">		String username = dbUri.getUserInfo().split(&quot;:&quot;)[0];</span>
+<span class="fc" id="L44">		String password = dbUri.getUserInfo().split(&quot;:&quot;)[1];</span>
+<span class="fc" id="L45">		String dbUrl = &quot;jdbc:postgresql://&quot; + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() +  &quot;?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory&quot;;</span>
+
+<span class="fc" id="L47">		log.info(&quot;Username: {} Password: {}&quot;, username, password);</span>
+<span class="fc" id="L48">		log.info (&quot;dbUrl: {}&quot;, dbUrl);</span>
+		
+<span class="fc" id="L50">		connection = DriverManager.getConnection(dbUrl, username, password);</span>
+<span class="fc" id="L51">		System.out.println(&quot;Connection established&quot;);</span>
+
+<span class="fc" id="L53">		return connection;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

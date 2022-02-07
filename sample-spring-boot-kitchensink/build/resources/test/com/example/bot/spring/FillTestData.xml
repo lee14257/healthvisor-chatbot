@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<food foodID="1234" 
+		name="pork" 
+		category="meat"
+		calories="300"
+		sodium="10" 
+		saturatedFat="30" 
+		protein="10" 
+		carbohydrate="40"
+	/>
+</dataset>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.bot.spring.KitchenSinkTester" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-11-20T14:18:07" hostname="Woos-MacBook-Pro.local" time="2.028">
+  <properties/>
+  <testcase name="testNotFound" classname="com.example.bot.spring.KitchenSinkTester" time="2.028"/>
+  <system-out><![CDATA[2017-11-20 22:17:57.289  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [com.example.bot.spring.KitchenSinkTester], using SpringBootContextLoader
+2017-11-20 22:17:57.291  INFO 77666 --- [    Test worker] o.s.t.c.support.AbstractContextLoader    : Could not detect default resource locations for test class [com.example.bot.spring.KitchenSinkTester]: no resource found for suffixes {-context.xml, Context.groovy}.
+2017-11-20 22:17:57.298  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2017-11-20 22:17:57.301  INFO 77666 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@7145dcf3, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@4f4d3027, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@691617f7, org.springframework.test.context.support.DirtiesContextTestExecutionListener@3d775c36, org.springframework.test.context.transaction.TransactionalTestExecutionListener@620aad2f, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@44606541, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@1d107b95, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@1a8102ed, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@2dd5b747, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@6a5895d1, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@740a97dc, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@668e65da]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.4.2.RELEASE)
+
+2017-11-20 22:18:07.379  INFO 77666 --- [    Test worker] c.example.bot.spring.KitchenSinkTester   : Starting KitchenSinkTester on Woos-MacBook-Pro.local with PID 77666 (started by woochanlee in /Users/woochanlee/Desktop/dietBot/my-fork/sample-spring-boot-kitchensink)
+2017-11-20 22:18:07.380  INFO 77666 --- [    Test worker] c.example.bot.spring.KitchenSinkTester   : No active profile set, falling back to default profiles: default
+2017-11-20 22:18:07.386  INFO 77666 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@214b975e: startup date [Mon Nov 20 22:18:07 HKT 2017]; root of context hierarchy
+2017-11-20 22:18:07.426  INFO 77666 --- [    Test worker] c.example.bot.spring.KitchenSinkTester   : Started KitchenSinkTester in 10.113 seconds (JVM running for 92.24)
+2017-11-20 22:18:07.430  INFO 77666 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : Username: jhtujcljzuxxup Password: 097e4d405e20588e00af2a313f5dfdcb8afd2348cf3bbcd6eb8be93eba3c6f2e
+2017-11-20 22:18:07.430  INFO 77666 --- [    Test worker] c.example.bot.spring.SQLDatabaseEngine   : dbUrl: jdbc:postgresql://ec2-204-236-236-188.compute-1.amazonaws.com:5432/d8auh26sc880mi?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+Connection established
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

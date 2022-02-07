@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MenuController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sample-spring-boot-kitchensink</a> &gt; <a href="index.source.html" class="el_package">com.example.bot.spring.controllers</a> &gt; <span class="el_source">MenuController.java</span></div><h1>MenuController.java</h1><pre class="source lang-java linenums">package com.example.bot.spring.controllers;
+
+import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.User;
+
+import java.util.*;
+import java.util.function.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Service
+<span class="fc" id="L17">public class MenuController{</span>
+	
+	/** This controller helps the user to pick a food from the menu.
+	 * 
+	 */
+	
+	@Autowired
+	private ProfileRepository profileRepository;
+	
+	@Autowired
+	private WeightRepository weightRepository;
+
+	@Autowired
+	private MealRepository mealRepository;
+	
+	@Autowired
+	private FoodRepository foodRepository;
+	
+	@Autowired
+	private User user;
+	
+	/** The ID of the user
+	 * 
+	 */
+	private String userID;
+	/** The text version of the menu.
+	 * 
+	 */
+	private String menu;
+	
+	/** The getter of the user's ID.
+	 * 
+	 * @return the user's ID
+	 */
+	public String getUserID() {
+<span class="nc" id="L52">		return userID;</span>
+	}
+	
+	/** The setter of the user's ID.
+	 * 
+	 * @param id the user's ID
+	 */
+	public void setUserID(String id) {
+<span class="fc" id="L60">		userID = id;</span>
+<span class="fc" id="L61">	}</span>
+	
+	/** The getter of the menu.
+	 * 
+	 * @return the text version of the menu
+	 */
+	public String getMenu() {
+<span class="nc" id="L68">		return menu;</span>
+	}
+	
+	/** The setter of the menu.
+	 * 
+	 * @param menuList the text version of the menu
+	 */
+	public void setMenu(String menuList) {
+<span class="fc" id="L76">		menu = menuList;</span>
+<span class="fc" id="L77">	}</span>
+	
+	/** This method helps the user to pick a food from the menu.
+	 * 
+	 * @return the name of the choice from the menu
+	 */
+	public String pickFood() {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		if(menu.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L85">			return &quot;No menu is entered.&quot;;</span>
+		}
+<span class="fc" id="L87">		String[] choices = menu.split(System.getProperty(&quot;line.separator&quot;));</span>
+		
+		//For scoring and generating reply based on reasons
+<span class="fc" id="L90">		String[][] scores = new String[choices.length][6];</span>
+		//0 - eaten
+		//1 - interest
+		//2 - calories
+		//3 - protein
+		//4 - carbohydrate
+		//5 - fat
+<span class="fc" id="L97">		int[] finalScore = new int[choices.length];</span>
+		
+		//Get Food IDs from Menu
+<span class="fc" id="L100">		List&lt;Set&lt;Food&gt;&gt; result = new ArrayList&lt;Set&lt;Food&gt;&gt;();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    	for(int i=0;i&lt;choices.length;i++) {</span>
+<span class="fc" id="L102">    		Set&lt;Food&gt; foods = generateFoods(choices[i]);</span>
+<span class="fc" id="L103">    		result.add(foods);</span>
+    	}
+    	
+    	//Check nutrients
+<span class="fc" id="L107">    	String[] nutrientScores = </span>
+<span class="fc" id="L108">    			checkNutrient(result, &quot;calories&quot;, user.getRemainingCalories(userID), user.getBMR(userID)/3.0);</span>
+<span class="fc" id="L109">    	String[] proteinScores = </span>
+<span class="fc" id="L110">    	    	checkNutrient(result, &quot;protein&quot;, user.getRemainingProtein(userID), user.getBMR(userID)*0.2/4.0/3.0);</span>
+<span class="fc" id="L111">    	String[] carboScores = </span>
+<span class="fc" id="L112">    	    	checkNutrient(result, &quot;carbohydrate&quot;, user.getRemainingCarbohydrate(userID), user.getBMR(userID)*0.55/4.0/3.0);</span>
+<span class="fc" id="L113">    	String[] fatScores = </span>
+<span class="fc" id="L114">    	    	checkNutrient(result, &quot;fat&quot;, user.getRemainingFat(userID), user.getBMR(userID)*0.25/9.0/3.0);</span>
+    	
+<span class="fc bfc" id="L116" title="All 2 branches covered.">    	for(int i=0;i&lt;choices.length;i++) {</span>
+<span class="fc" id="L117">    		scores[i][2] = nutrientScores[i];</span>
+<span class="fc" id="L118">    		scores[i][3] = proteinScores[i];</span>
+<span class="fc" id="L119">    		scores[i][4] = carboScores[i];</span>
+<span class="fc" id="L120">    		scores[i][5] = fatScores[i];</span>
+    	}
+		
+		//Get FoodIDs from past few days
+<span class="fc" id="L124">		Set&lt;Food&gt; pastFoods = getFoodsFromPastMeals();</span>
+		
+    	//Check if eaten
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">		if(!pastFoods.isEmpty()) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">			for(int i=0;i&lt;choices.length;i++) {</span>
+<span class="nc" id="L129">				StringBuilder builder = new StringBuilder();</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">	    		for(Food fd : result.get(i)) {</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">	    			for(Food pastFd : pastFoods) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">		    			if(pastFd.getFoodID() == fd.getFoodID()) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">		    				if (builder.length() != 0) {</span>
+<span class="nc" id="L134">		    			        builder.append(&quot;, &quot;);</span>
+		    				}
+<span class="nc" id="L136">		    				String fdName = processFoodName(fd.getName().toLowerCase());</span>
+<span class="nc" id="L137">		    				builder.append(fdName);</span>
+		    			}
+<span class="nc" id="L139">	    			}</span>
+<span class="nc" id="L140">	    		}</span>
+<span class="nc" id="L141">	    		scores[i][0] = &quot;&quot;;</span>
+<span class="nc" id="L142">	    		scores[i][0] += builder;</span>
+	    	}
+		}
+		
+    	//Get Interests
+<span class="fc" id="L147">    	String[] interests = profileRepository.findByUserID(userID).getInterests();</span>
+    	
+    	//Check if interests align
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">		if(interests != null) {</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">	    	for(int i=0;i&lt;choices.length;i++) {</span>
+<span class="nc" id="L152">    			StringBuilder builder = new StringBuilder();</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">	    		for(Food fd : result.get(i)) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">	    	    	for(int j=0;j&lt;interests.length;j++) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">	    	    		if(interests[j].equals(fd.getCategory())) {</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">	    	    			if (builder.length() != 0) {</span>
+<span class="nc" id="L157">	        			        builder.append(&quot;, &quot;);</span>
+	    	    			}
+<span class="nc" id="L159">	    	    			builder.append(interests[j]);</span>
+	    	    		}
+	    	    	}
+<span class="nc" id="L162">	    		}</span>
+<span class="nc" id="L163">	    		scores[i][1] = &quot;&quot;;</span>
+<span class="nc" id="L164">    	    	scores[i][1] += builder;</span>
+	    	}
+		}
+		
+    	//Calculate Score
+<span class="fc" id="L169">    	finalScore = calculateScores(scores);</span>
+		
+    	//Find Max
+<span class="fc" id="L172">    	int finalChoice = findMax(finalScore);</span>
+    	
+<span class="fc" id="L174">    	return generateReply(scores[finalChoice], choices[finalChoice]);</span>
+	}
+	
+	/** This method processes the food name, so that only the part before the comma of the food name is used.
+	 * @param fdName the full name of the food
+	 * @return the processed food name
+	 */
+	private String processFoodName(String fdName) {
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">		if(fdName.contains(&quot;,&quot;)) {</span>
+<span class="nc" id="L183">    		fdName = fdName.substring(0,fdName.indexOf(&quot;,&quot;));</span>
+    	}
+<span class="fc" id="L185">    	return fdName;</span>
+	}
+	
+	/** This method creates a set of food from a text version of a meal.
+	 * 
+	 * @param meal the text version of a meal
+	 * @return the set of food of the meal
+	 */
+	public Set&lt;Food&gt; generateFoods(String meal) {
+<span class="fc" id="L194">		int size = 0;</span>
+<span class="fc" id="L195">		Set&lt;String&gt; foodNames = new HashSet&lt;String&gt;();</span>
+<span class="fc" id="L196">    	Set&lt;Food&gt; foods = new HashSet&lt;Food&gt;();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        for(Food fd : foodRepository.findAll()) {</span>
+<span class="fc" id="L198">        	String fdName = processFoodName(fd.getName().toLowerCase());</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        	if(fdName.endsWith(&quot;s&quot;)) {</span>
+<span class="nc" id="L200">            	fdName = fdName.substring(0, fdName.length()-1);</span>
+            }
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        	if(meal.toLowerCase().contains(fdName)) { </span>
+<span class="nc" id="L203">        		foodNames.add(fdName);</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">        		if(size&lt;foodNames.size()) {</span>
+<span class="nc" id="L205">        	        foods.add(fd);</span>
+<span class="nc" id="L206">        	        size++;</span>
+        		}
+   	        }   
+<span class="fc" id="L209">       	}</span>
+        
+<span class="fc" id="L211">    	return foods;</span>
+	}
+	
+	/** This method returns the set of food consumed by the user for the past three days.
+	 * 
+	 * @return the set of food consumed by the user for the past three days
+	 */
+	private Set&lt;Food&gt; getFoodsFromPastMeals(){
+<span class="fc" id="L219">		Set&lt;Food&gt; foods = new HashSet&lt;Food&gt;();</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">		for(Meal ml : mealRepository.findAll()) {</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">			if(ml.getUserID().equals(userID)) { </span>
+<span class="fc" id="L222">	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));</span>
+<span class="fc" id="L223">	        		Date mealTime = new Date(ml.getTime().getTime());</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">	        		if(mealTime.after(threeDaysAgo)) {</span>
+<span class="fc" id="L225">	        			foods.addAll(generateFoods(ml.getFood()));</span>
+	        		}
+	        }
+<span class="fc" id="L228">		}</span>
+<span class="fc" id="L229">		return foods;</span>
+	}
+	
+	/** This method checks the corresponding nutrient in each food of the menu, comparing it to the user's
+	 * remaining nutrient for the day, as well as the suitable amount per meal for the user.
+	 * 
+	 * @param result the list of food of the menu
+	 * @param type the type of nutrient
+	 * @param remaining the remaining nutrient for the day for the user
+	 * @param perMeal the suitable amount of nutrient for the user
+	 * @return an array containing the information about the amount of nutrient (suitable or not)
+	 */
+	private String[] checkNutrient(List&lt;Set&lt;Food&gt;&gt; result, String type, double remaining, double perMeal) {
+<span class="fc" id="L242">		String[] scores = new String[result.size()];</span>
+<span class="fc" id="L243">		double minimum = Double.MAX_VALUE;</span>
+<span class="fc" id="L244">    	int minIndex = -1;</span>
+    	double difference;
+
+<span class="fc bfc" id="L247" title="All 2 branches covered.">		for(int i=0;i&lt;result.size();i++) {</span>
+<span class="fc" id="L248">    		double total = 0; </span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    		for(Food f : result.get(i)) {</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">    			if(type.equals(&quot;calories&quot;)) {</span>
+<span class="nc" id="L251">        			total += f.getCalories();</span>
+    			}
+<span class="nc bnc" id="L253" title="All 2 branches missed.">    			else if(type.equals(&quot;protein&quot;)) {</span>
+<span class="nc" id="L254">    				total += f.getProtein();</span>
+    			}
+<span class="nc bnc" id="L256" title="All 2 branches missed.">    			else if(type.equals(&quot;carbohydrate&quot;)) {</span>
+<span class="nc" id="L257">    				total += f.getCarbohydrate();</span>
+    			}
+<span class="nc bnc" id="L259" title="All 2 branches missed.">    			else if(type.equals(&quot;fat&quot;)) {</span>
+<span class="nc" id="L260">    				total += f.getSaturatedFat();</span>
+    			}
+<span class="nc" id="L262">    		}</span>
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">    		if(total&gt;remaining) {</span>
+<span class="nc" id="L264">    			scores[i] = &quot;Over&quot;;</span>
+    		}
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">    		else if(total!=0){</span>
+<span class="nc" id="L267">    			difference = Math.abs(total - perMeal);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">    			if(difference&lt;minimum) {</span>
+<span class="nc" id="L269">    				minimum = difference;</span>
+<span class="nc" id="L270">    				minIndex = i;</span>
+    			}
+    		}
+    	}
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">		if(minIndex!=-1) {</span>
+<span class="nc" id="L275">	    	scores[minIndex] = type;</span>
+		}
+<span class="fc" id="L277">		return scores;</span>
+	}
+	
+	/** This method calculates the final score of each choice in the menu base on all factors.
+	 * 
+	 * @param scores the resulting scores after considering all factors
+	 * @return an array of the scores of each choice in the menu
+	 */
+	private int[] calculateScores(String[][] scores) {
+<span class="fc" id="L286">		int[] finalScore = new int[scores.length];</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">		for(int i=0;i&lt;scores.length;i++) {</span>
+<span class="pc bpc" id="L288" title="3 of 4 branches missed.">    		if(scores[i][0]!=null &amp;&amp; !scores[i][0].isEmpty()) {</span>
+<span class="nc" id="L289">            	String[] items = scores[i][0].split(&quot;,&quot;, -1);</span>
+<span class="nc" id="L290">            	finalScore[i] -= items.length;</span>
+    		}
+<span class="pc bpc" id="L292" title="3 of 4 branches missed.">    		if(scores[i][1]!=null &amp;&amp; !scores[i][1].isEmpty()) {</span>
+<span class="nc" id="L293">            	String[] items = scores[i][1].split(&quot;,&quot;, -1);</span>
+<span class="nc" id="L294">            	finalScore[i] += items.length;</span>
+    		}
+<span class="fc bfc" id="L296" title="All 2 branches covered.">    		for(int j=2;j&lt;scores[i].length;j++) {</span>
+<span class="pc bpc" id="L297" title="3 of 4 branches missed.">    			if(scores[i][j]!=null &amp;&amp; !scores[i][j].isEmpty()) {</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">        			if(scores[i][j].equals(&quot;over&quot;)) {</span>
+<span class="nc" id="L299">        				finalScore[i] -= 3;</span>
+        			}
+        			else{
+<span class="nc" id="L302">        				finalScore[i] += 1;</span>
+        			}
+        		}
+    		}
+    	}
+<span class="fc" id="L307">		return finalScore;</span>
+	}
+	
+	/** This method returns the maximum integer in an array
+	 * 
+	 * @param finalScore an array of integers
+	 * @return the maximum in the array
+	 */
+	private int findMax(int[] finalScore) {
+<span class="fc" id="L316">		int max = finalScore[0];</span>
+<span class="fc" id="L317">    	int finalChoice = 0;</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">    	for(int i=0;i&lt;finalScore.length;i++) {</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">    		if(max &lt; finalScore[i]) {</span>
+<span class="nc" id="L320">    			max = finalScore[i];</span>
+<span class="nc" id="L321">    			finalChoice = i;</span>
+    		}
+    	}
+<span class="fc" id="L324">    	return finalChoice;</span>
+	}
+	
+	/** This method prepares a response to the user base on all the different factors to help 
+	 * the user to pick from the menu.
+	 * 
+	 * @param scores the scoring information of the final choice in each factor
+	 * @param finalChoice the name of the final choice from the menu
+	 * @return the reply to the user
+	 */
+	private String generateReply(String[] scores, String finalChoice) {
+<span class="fc" id="L335">		String reply = new String();</span>
+<span class="pc bpc" id="L336" title="3 of 4 branches missed.">    	if(scores[0]!=null &amp;&amp; !scores[0].isEmpty()) {</span>
+<span class="nc" id="L337">    		reply += &quot;I know that you have eaten &quot;+scores[0]+&quot; in the past few days.&quot;;</span>
+    	}
+<span class="pc bpc" id="L339" title="2 of 4 branches missed.">    	if(reply!=null &amp;&amp; !reply.isEmpty()) {</span>
+<span class="nc" id="L340">    		reply += &quot; But I still &quot;;</span>
+    	}
+    	else {
+<span class="fc" id="L343">    		reply += &quot;I &quot;;</span>
+    	}
+<span class="fc" id="L345">    	reply += &quot;recommend you to choose &quot;+finalChoice;</span>
+<span class="pc bpc" id="L346" title="3 of 4 branches missed.">    	if(scores[1]!=null &amp;&amp; !scores[1].isEmpty()) {</span>
+<span class="nc" id="L347">    		Set&lt;String&gt; interests = new HashSet&lt;String&gt;();</span>
+<span class="nc" id="L348">    		String[] items = scores[1].split(&quot;, &quot;, -1);</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">    		for(int i=0;i&lt;items.length;i++) {</span>
+<span class="nc" id="L350">    			interests.add(items[i]);</span>
+    		}
+<span class="nc" id="L352">    		reply += &quot; because I know that you like foods that are &quot;;</span>
+<span class="nc" id="L353">    		StringBuilder builder = new StringBuilder();</span>
+<span class="nc bnc" id="L354" title="All 2 branches missed.">    		for(String s : interests) {</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">    			 if (builder.length() != 0) {</span>
+<span class="nc" id="L356">    			        builder.append(&quot;, &quot;);</span>
+    			 }
+<span class="nc" id="L358">    			 builder.append(s.toLowerCase());</span>
+<span class="nc" id="L359">    		}</span>
+<span class="nc" id="L360">    		reply += builder;</span>
+    	}
+    	
+<span class="fc" id="L363">    	StringBuilder builder2 = new StringBuilder();</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">    	for(int i=2;i&lt;scores.length;i++) {</span>
+<span class="pc bpc" id="L365" title="3 of 4 branches missed.">    		if(scores[i]!=null &amp;&amp; !scores[i].isEmpty()) {</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">    			if (builder2.length() != 0) {</span>
+<span class="nc" id="L367">			        builder2.append(&quot;, &quot;);</span>
+    			}
+<span class="nc" id="L369">    			builder2.append(scores[i]);</span>
+    		}
+    	}
+<span class="fc" id="L372">    	reply += &quot;.&quot;;</span>
+<span class="pc bpc" id="L373" title="1 of 2 branches missed.">    	if(builder2.length() != 0) {</span>
+<span class="nc" id="L374">    		reply += &quot;  This choice has the most suitable amount of &quot; + builder2 + &quot;.&quot;;</span>
+    	}
+<span class="fc" id="L376">    	return reply;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
