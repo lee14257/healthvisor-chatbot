@@ -32,6 +32,19 @@ jacocoTestReport {
 		csv.enabled false
 		html.destination file("${buildDir}/jacocoHtml")
 	}
+	
+	afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                    	'com/example/bot/spring/KitchenSinkController**',
+                    	'com/example/bot/spring/DatabaseInitializer**',
+                    	'com/example/bot/spring/ListSingleton**',
+                    	'com/example/bot/spring/KitchenSinkApplication**',
+                    	'com/example/bot/spring/KitchenSinkWebMvcConfigurer**'
+                    	])
+        })
+    }
 }
 
 test {

@@ -969,6 +969,8 @@ public class KitchenSinkController {
 			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
 			messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
 			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+			sendPushMessage(new TextMessage("Recommendation has been accepted. Here is an ice cream coupon"),id);
+
 		}
 			
 		else {
@@ -1036,11 +1038,9 @@ public class KitchenSinkController {
 	}
 
 	public KitchenSinkController() {
-		database = new SQLDatabaseEngine();
 		itscLOGIN = System.getenv("ITSC_LOGIN");
 	}
 
-	private DatabaseEngine database;
 	private String itscLOGIN;
 	
 

@@ -220,19 +220,9 @@ public class User {
 			outputStr += "Male\n";
 		}
 		outputStr += "Age: ";
-		if(age == null || age == 0) {
-			outputStr += "44\n";
-		}
-		else {
-			outputStr += age.toString()+"\n";
-		}
+		outputStr += age.toString()+"\n";
 		outputStr += "Height: ";
-		if(height == null || height == 0) {
-			outputStr += "177.0cm\n\n";
-		}
-		else {
-			outputStr += height.toString()+"cm\n\n";
-		}
+		outputStr += height.toString()+"cm\n\n";
 		return outputStr;
 	}
 	
@@ -524,12 +514,6 @@ public class User {
 		if(weight == null) {
 			weight = 89.0;
 		}
-		if(height == null || height == 0) {
-			height = 177.0;
-		}
-		if(age == null || age == 0) {
-			age = 44;
-		}
 		double bmr = 10*weight + 6.25*height - 5*age;
 		if(pf.getGender()=="Female") {
 			bmr -= 161;
@@ -551,9 +535,6 @@ public class User {
 		Double height = pf.getHeight()/100.0;
 		if(weight == null) {
 			weight = 89.0;
-		}
-		if(height == null || height == 0) {
-			height = 1.77;
 		}
 		return weight/(height*height);
 	}
@@ -587,9 +568,6 @@ public class User {
 	public double getBFP (String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Integer age = pf.getAge();
-		if(age == null || age == 0) {
-			age = 44;
-		}
 		double bfp = 1.2*getBMI(userID) + 0.23*age;
 		if(pf.getGender()=="Female") {
 			bfp -= 16.2;

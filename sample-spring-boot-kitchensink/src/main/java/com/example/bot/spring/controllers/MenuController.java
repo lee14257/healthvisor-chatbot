@@ -363,15 +363,17 @@ public class MenuController{
     	StringBuilder builder2 = new StringBuilder();
     	for(int i=2;i<scores.length;i++) {
     		if(scores[i]!=null && !scores[i].isEmpty()) {
-    			if (builder2.length() != 0) {
-			        builder2.append(", ");
+    			if(!scores[i].equals("Over")) {
+	    			if (builder2.length() != 0) {
+				        builder2.append(", ");
+	    			}
+	    			builder2.append(scores[i]);
     			}
-    			builder2.append(scores[i]);
     		}
     	}
     	reply += ".";
     	if(builder2.length() != 0) {
-    		reply += "  This choice has the most suitable amount of " + builder2 + ".";
+    		reply += " This choice has the most suitable amount of " + builder2 + ".";
     	}
     	return reply;
 	}

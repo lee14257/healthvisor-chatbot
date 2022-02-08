@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.*;
 import java.net.URI;
@@ -56,10 +55,8 @@ import org.springframework.transaction.annotation.*;
     TransactionalTestExecutionListener.class })
 @Transactional
 @SpringBootTest(classes={ RepoFactory4Test.class, 
-		InputToFoodTest.class, 
-		InputToFood.class, 
+		UserTest.class, 
 		MenuController.class,
-		DatabaseInitializer.class,
 		User.class })
 public class UserTest {
 	@Autowired
@@ -175,11 +172,16 @@ public class UserTest {
 	
 	@Test
 	public void testShowDailyProgress() {
-		String result1 = user.showDailyProgress("1");
-		String result2 = user.showDailyProgress("2");
-		String result3 = user.showDailyProgress("3");
-		assertNotEquals(result1,"Basal Metabolic Rate (BMR): ");
-		assertNotEquals(result2,"Basal Metabolic Rate (BMR): ");
-		assertNotEquals(result3,"Basal Metabolic Rate (BMR): ");
+		String result = user.showDailyProgress("1");
+		assertEquals(result,"Basal Metabolic Rate (BMR): 1857.50\n" + 
+				"Body Mass Index (BMI): 30.80\n" + 
+				"Body Fat Percentage (BFP): 36.16\n" + 
+				"Current Status: Obese\n" + 
+				"\n" + 
+				"Remaining Nutrients for today: \n" + 
+				"Calories: 1857.50\n" + 
+				"Protein: 92.88\n" + 
+				"Carbohydrate: 255.41\n" + 
+				"Fat: 51.60\n");
 	}
 }

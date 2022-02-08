@@ -36,12 +36,12 @@ public class Profile {
 	/** This is the age of the user.
 	 * 
 	 */
-	int age;
+	Integer age;
 	
 	/** This is the height of the user.
 	 * 
 	 */
-	double height;
+	Double height;
 	
 	/** This is the user's interests in food.
 	 * 
@@ -92,6 +92,9 @@ public class Profile {
 	 * @return the age of the user
 	 */
 	public int getAge() {
+		if(age == null || age == 0) {
+			return 44;
+		}
 		return age;
 	}
 	
@@ -100,6 +103,9 @@ public class Profile {
 	 * @return the height of the user
 	 */
 	public double getHeight() {
+		if(height == null || height == 0) {
+			return 177.0;
+		}
 		return height;
 	}
 	

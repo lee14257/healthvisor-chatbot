@@ -164,10 +164,6 @@ public class InputToFood {
      * @return the details of the food
      */
     public String getFoodDetails(String food) {
-    		if(food == null || food == "") {
-    			return "You have not entered any food";
-    		}
-    		
     		String resultFood = "You have entered " + food + ".\n";
     		String[] splitFood = food.split("\\s+");
     		

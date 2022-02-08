@@ -42,9 +42,10 @@ import com.example.bot.spring.tables.MealRepository;
 import com.example.bot.spring.tables.Meal;
 import com.example.bot.spring.tables.ProfileRepository;
 import com.example.bot.spring.tables.Profile;
-import com.example.bot.spring.DatabaseInitializer;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
+
 import com.example.bot.spring.RepoFactory4Test;
+import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.*;
 import org.springframework.test.context.transaction.*;
@@ -69,11 +70,10 @@ import org.springframework.transaction.annotation.*;
 		InputToFoodTest.class, 
 		InputToFood.class, 
 		MenuController.class,
-		DatabaseInitializer.class,
 		User.class })
 public class InputToFoodTest {
 	@Autowired
-	private InputToFood inputToFood;
+	private InputToFood inputToFood;	
 	
 	@Autowired
 	private User user;
@@ -90,20 +90,35 @@ public class InputToFoodTest {
 	@Autowired
 	private FoodRepository foodRepository;
 	
-	@Autowired 
-	private DatabaseInitializer init;
-	
 	@Before
 	public void executedBeforeEach() {
-		init.initializeDatabase();
+		Food food = new Food();
+        food.setName("rice");
+        food.setCategory("Meals, Entrees, and Sidedishes");
+        food.setCalories(358);
+        food.setSodium(1238);
+        food.setSaturatedFat(1.32);
+        food.setProtein(10.64);
+        food.setCarbohydrate(75.8);
+        foodRepository.save(food);
+        
+        food.setName("candies");
+        food.setCategory("Sweets");
+        food.setCalories(384);
+        food.setSodium(28);
+        food.setSaturatedFat(7.17);
+        food.setProtein(2.19);
+        food.setCarbohydrate(80.99);
+        foodRepository.save(food);
 		
-		user.addUser("1");
-		user.inputGender("1","Male");
-		user.inputAge("1",20);
-		user.inputHeight("1",170.0);
-		user.inputWeight("1",85.0);
-		user.inputInterest("1","Sweets, Cereal Grains and Pasta");
-		user.inputMeal("1","Rice");
+        String[] interests = {"Sweets", "Meals, Entrees, and Sidedishes"};
+		Profile pf = new Profile();
+		pf.setUserID("1");
+		pf.setGender("Male");
+		pf.setAge(20);
+		pf.setHeight(170.0);
+		pf.setInterest(interests);
+		profileRepository.save(pf);
 		user.addUser("2");
 		user.inputGender("2","Female");
 		user.inputAge("2",22);
@@ -111,18 +126,19 @@ public class InputToFoodTest {
 		user.inputWeight("2",55.0);
 		user.inputInterest("2","Sweets");
 		user.inputMeal("2","Rice");
+		user.inputMeal("2","Candies");
 		user.addUser("3");
 	}
 	
 	@Test
 	public void testreadFromText() {
 		assertEquals(inputToFood.readFromText("1",""),"No menu is entered.");
-		assertNotEquals(inputToFood.readFromText("1","Candy ice-cream\nRice"),
-				"I know that you have eaten rice in the past few days. But I still recommend you to choose Rice. This choice has the most suitable amount of calories, protein, carbohydrate.");
-		assertNotEquals(inputToFood.readFromText("2","Syrup Candy ice-cream\nRice"),
-				"I recommend you to choose Syrup Candy ice-cream because I know that you like foods that are sweets. This choice has the most suitable amount of calories, carbohydrate, fat.");
-		assertNotEquals(inputToFood.readFromText("3","Candy ice-cream\nRice"),
-				"I recommend you to choose Rice. This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
+		assertEquals(inputToFood.readFromText("1","Candies"+System.getProperty("line.separator")+"Rice"),
+				"I recommend you to choose Candies because I know that you like foods that are sweets. This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
+		assertEquals(inputToFood.readFromText("2","Candies"+System.getProperty("line.separator")+"Rice"),
+				"I know that you have eaten candies in the past few days. But I still recommend you to choose Candies because I know that you like foods that are sweets. This choice has the most suitable amount of calories, protein, fat.");
+		assertEquals(inputToFood.readFromText("3","Candies"+System.getProperty("line.separator")+"Rice"),
+				"I recommend you to choose Candies. This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
 	}
 	
 	@Test

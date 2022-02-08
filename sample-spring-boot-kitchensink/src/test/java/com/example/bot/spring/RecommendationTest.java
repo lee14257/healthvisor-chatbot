@@ -65,8 +65,8 @@ import org.springframework.transaction.annotation.*;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 @Transactional
-@SpringBootTest(classes={ RepoFactory4Test.class, 
-		RecommendationTest.class, 
+@SpringBootTest(classes={ RepoFactory4Test.class,
+		RecommendationTest.class,
 		MenuController.class, 
 		User.class })
 public class RecommendationTest {
