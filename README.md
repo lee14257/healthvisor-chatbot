@@ -11,7 +11,7 @@ Healthvisor is a chatbot that runs on the instant message software LINE. It assi
 - Assists the user to pick a food from a list of menu utilizing a unique recommendation algorithm
 
 ## Recommendation Algorithm
-![alt text](healthvisor-chatbot/docs/img/algorithm.jpg)
+![alt text](/docs/img/algorithm.jpg)
 
 
 ## JPEG Image Recognition
