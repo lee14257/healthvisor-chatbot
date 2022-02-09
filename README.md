@@ -1,7 +1,8 @@
 # Healthvisor Chatbot
 > Group Project for COMP3111H - Software Engineering
+> Created using the Java Enterprise Edition (J2EE) template framework provided by the LINE forked from  https://github.com/line/line-bot-sdk-java.
 
-Healthvisor is a chatbot that runs on the instant message software LINE. It assists users to obtain nutritional details of selected food menus, and provides healthy dietary recommendations when deciding what to eat. Created using the Java Enterprise Edition (J2EE) template framework provided by the LINE developer website.
+Healthvisor is a chatbot that runs on the instant message software LINE. It assists users to obtain nutritional details of selected food menus, and provides healthy dietary recommendations when deciding what to eat. 
 
 ## Features
 - Creates a profile for the user that includes interests in food, weight (with timestamp), past meals, etc.
