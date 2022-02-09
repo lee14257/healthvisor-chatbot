@@ -15,7 +15,7 @@ Healthvisor is a chatbot that runs on the instant message software LINE. It assi
 <img src="/docs/img/algorithm.png" width="400" height="400">
 
 ## JPEG Image Recognition
-<img src="/docs/img/model.png" width="750" height="200">
+<img src="/docs/img/model.png" width="700" height="200">
 
 ## Data Infrastructure
 ![alt text](/docs/img/data_arch.png)
