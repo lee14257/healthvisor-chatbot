@@ -4,6 +4,8 @@
 
 Healthvisor is a chatbot that runs on the instant message software LINE. It assists users to obtain nutritional details of selected food menus, and provides healthy dietary recommendations when deciding what to eat. 
 
+[Deployment guide](sample-spring-boot-kitchensink/README.md)
+
 ## Features
 - Creates a profile for the user that includes interests in food, weight (with timestamp), past meals, etc.
 - Reads menus in a variety of data format (e.g. text files, JSON, JPEG pictures)
