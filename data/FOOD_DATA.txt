@@ -2391,7 +2391,7 @@ Pepperoni, pork, beef^Sausages and Luncheon Meats^494^1761^43.98^22.68^0.00
 Peppered loaf, pork, beef^Sausages and Luncheon Meats^149^732^6.37^17.30^4.53
 Pate, liver, not specified, canned^Sausages and Luncheon Meats^319^697^28.00^14.20^1.50
 Pate, goose liver, smoked, canned^Sausages and Luncheon Meats^462^697^43.84^11.40^4.67
-Sports drink, PEPSICO QUAKER GATORADE, GATORADE, original, fruit-flavored, ready-to-drink. Now called “G performance O 2”.^Beverages^26^39^0.00^0.00^6.43
+Sports drink, PEPSICO QUAKER GATORADE, GATORADE, original, fruit-flavored, ready-to-drink. Now called Â“G performance O 2Â”.^Beverages^26^39^0.00^0.00^6.43
 OSCAR MAYER, Summer Sausage Beef Thuringer Cervelat^Sausages and Luncheon Meats^309^1424^27.00^14.60^1.90
 OSCAR MAYER, Smokies Sausage Little Cheese (pork, turkey)^Sausages and Luncheon Meats^315^1036^28.20^13.50^1.70
 OSCAR MAYER, Smokies Sausage Little (pork, turkey)^Sausages and Luncheon Meats^301^1022^27.10^12.40^1.80
